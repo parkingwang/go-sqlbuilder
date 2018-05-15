@@ -10,8 +10,8 @@ import (
 //
 
 type SelectBuilder struct {
-	columns []string
-	table 	string
+	columns  []string
+	table    string
 	distinct bool
 }
 
@@ -44,7 +44,7 @@ func (sb *SelectBuilder) build() *bytes.Buffer {
 
 	if len(sb.columns) == 0 {
 		buf.WriteByte('*')
-	}else{
+	} else {
 		buf.WriteString(strings.Join(Map(sb.columns, Escape), ","))
 	}
 
@@ -58,9 +58,5 @@ func (sb *SelectBuilder) Where() *WhereBuilder {
 }
 
 func (sb *SelectBuilder) SQL() string {
-	buf := sb.build()
-	buf.WriteByte(';')
-	return buf.String()
+	return endpoint(sb.build())
 }
-
-

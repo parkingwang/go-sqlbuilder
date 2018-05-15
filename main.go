@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/go-sql/sql"
+	"github.com/go-sqlbuilder/sql"
 )
 
 //
@@ -10,7 +10,8 @@ import (
 //
 
 func main() {
-	fmt.Println( sql.Select("id", "username", "password").
+	fmt.Println(sql.Select("id", "username", "password").
+		Distinct().
 		From("t_users").
 		Where().
 		Equal("password").

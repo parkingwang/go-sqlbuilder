@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/go-sql.iml" filepath="$PROJECT_DIR$/.idea/go-sql.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/go-sqlbuilder.iml" filepath="$PROJECT_DIR$/.idea/go-sqlbuilder.iml" />
     </modules>
   </component>
 </project>

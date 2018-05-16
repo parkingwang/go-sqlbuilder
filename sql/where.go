@@ -25,7 +25,6 @@ func (cb *CondLinker) SQL() string {
 	return cb.whereBuilder.SQL()
 }
 
-
 ////
 
 // Where条件构建器
@@ -46,51 +45,51 @@ func newWhere(statement *bytes.Buffer) *WhereBuilder {
 }
 
 func (wb *WhereBuilder) Equal(column string) *CondLinker {
-	return wb.op(column, "=").linker
+	return wb.op(column, " = ").linker
 }
 
 func (wb *WhereBuilder) EqualTo(column string, value interface{}) *CondLinker {
-	return wb.opTo(column, "=", value).linker
+	return wb.opTo(column, " = ", value).linker
 }
 
 func (wb *WhereBuilder) NotEqual(column string) *CondLinker {
-	return wb.op(column, "<>").linker
+	return wb.op(column, " <> ").linker
 }
 
 func (wb *WhereBuilder) NotEqualTo(column string, value interface{}) *CondLinker {
-	return wb.opTo(column, "<>", value).linker
+	return wb.opTo(column, " <> ", value).linker
 }
 
 func (wb *WhereBuilder) GreaterThen(column string) *CondLinker {
-	return wb.op(column, ">").linker
+	return wb.op(column, " > ").linker
 }
 
 func (wb *WhereBuilder) GreaterThenTo(column string, value interface{}) *CondLinker {
-	return wb.opTo(column, ">", value).linker
+	return wb.opTo(column, " > ", value).linker
 }
 
 func (wb *WhereBuilder) GreaterEqualThen(column string) *CondLinker {
-	return wb.op(column, ">=").linker
+	return wb.op(column, " >= ").linker
 }
 
 func (wb *WhereBuilder) GreaterEqualThenTo(column string, value interface{}) *CondLinker {
-	return wb.opTo(column, ">=", value).linker
+	return wb.opTo(column, " >= ", value).linker
 }
 
 func (wb *WhereBuilder) LessThen(column string) *CondLinker {
-	return wb.op(column, "<").linker
+	return wb.op(column, " < ").linker
 }
 
 func (wb *WhereBuilder) LessThenTo(column string, value interface{}) *CondLinker {
-	return wb.opTo(column, "<", value).linker
+	return wb.opTo(column, " < ", value).linker
 }
 
 func (wb *WhereBuilder) LessEqualThen(column string) *CondLinker {
-	return wb.op(column, "<=").linker
+	return wb.op(column, " <= ").linker
 }
 
 func (wb *WhereBuilder) LessEqualTo(column string, value interface{}) *CondLinker {
-	return wb.opTo(column, "<=", value).linker
+	return wb.opTo(column, " <= ", value).linker
 }
 
 //

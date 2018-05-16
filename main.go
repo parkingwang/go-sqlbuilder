@@ -29,4 +29,11 @@ func main() {
 		Offset(20)
 
 	fmt.Println(sql2)
+
+	sql3 := sql.InsertInto("t_vehicles").
+		Columns("id", "number", "color").
+		Values(1, "粤BF49883", "YELLOW").
+		SQL()
+
+	fmt.Println(sql3)
 }

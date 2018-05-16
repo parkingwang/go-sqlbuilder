@@ -5,6 +5,7 @@
 ## Features
 
 - 目前只支持MySQL语法；
+- 未支持多表查询；
 
 ## Install
 

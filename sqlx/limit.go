@@ -41,3 +41,11 @@ func (slf *LimitBuilder) MakeSQL() string {
 func (slf *LimitBuilder) Execute(db *sql.DB) *Executor {
 	return newExecute(slf.SQL(), db)
 }
+
+func (slf *LimitBuilder) OrderBy(columns ...string) *OrderByBuilder {
+	return newOrderByBuilder(slf.SQL(), columns...)
+}
+
+func (slf *LimitBuilder) GroupBy(columns ...string) *GroupByBuilder {
+	return newGroupBy(slf.SQL(), columns...)
+}

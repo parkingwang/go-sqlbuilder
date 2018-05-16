@@ -12,15 +12,15 @@ import (
 
 ////
 
-type OrderBuilder struct {
+type OrderByBuilder struct {
 	buffer *bytes.Buffer
 }
 
-func newOrderBuilder(existsSQL string, columns ...string) *OrderBuilder {
+func newOrderByBuilder(existsSQL string, columns ...string) *OrderByBuilder {
 	if len(columns) == 0 {
 		panic("Columns is required for ORDER BY keyword")
 	}
-	ob := &OrderBuilder{
+	ob := &OrderByBuilder{
 		buffer: new(bytes.Buffer),
 	}
 	ob.buffer.WriteString(existsSQL)
@@ -29,34 +29,38 @@ func newOrderBuilder(existsSQL string, columns ...string) *OrderBuilder {
 	return ob
 }
 
-func (slf *OrderBuilder) Column(column string) *OrderBuilder {
+func (slf *OrderByBuilder) Column(column string) *OrderByBuilder {
 	slf.buffer.WriteString(", ")
 	slf.buffer.WriteString(EscapeName(column))
 	return slf
 }
 
-func (slf *OrderBuilder) ASC() *OrderBuilder {
+func (slf *OrderByBuilder) ASC() *OrderByBuilder {
 	slf.buffer.WriteString(" ASC")
 	return slf
 }
 
-func (slf *OrderBuilder) DESC() *OrderBuilder {
+func (slf *OrderByBuilder) DESC() *OrderByBuilder {
 	slf.buffer.WriteString(" DESC")
 	return slf
 }
 
-func (slf *OrderBuilder) Limit(limit int) *LimitBuilder {
+func (slf *OrderByBuilder) Limit(limit int) *LimitBuilder {
 	return newLimit(slf.SQL(), limit)
 }
 
-func (slf *OrderBuilder) SQL() string {
+func (slf *OrderByBuilder) GroupBy(columns ...string) *GroupByBuilder {
+	return newGroupBy(slf.SQL(), columns...)
+}
+
+func (slf *OrderByBuilder) SQL() string {
 	return slf.buffer.String()
 }
 
-func (slf *OrderBuilder) MakeSQL() string {
+func (slf *OrderByBuilder) MakeSQL() string {
 	return makeSQL(slf.buffer)
 }
 
-func (slf *OrderBuilder) Execute(db *sql.DB) *Executor {
+func (slf *OrderByBuilder) Execute(db *sql.DB) *Executor {
 	return newExecute(slf.SQL(), db)
 }

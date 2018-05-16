@@ -35,13 +35,13 @@ func (slf *DeleteBuilder) build() *bytes.Buffer {
 	return buf
 }
 
-func (slf *DeleteBuilder) Where(conditions Statement) *WhereBuilder {
-	return newWhereWith(slf.SQL(), conditions)
-}
-
 func (slf *DeleteBuilder) YesYesYesForceDelete() *DeleteBuilder {
 	slf.forceDelete = true
 	return slf
+}
+
+func (slf *DeleteBuilder) Where(conditions Statement) *WhereBuilder {
+	return newWhereWith(slf.SQL(), conditions)
 }
 
 func (slf *DeleteBuilder) SQL() string {

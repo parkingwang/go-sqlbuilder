@@ -56,13 +56,13 @@ func (slf *UpdateBuilder) builder() *bytes.Buffer {
 	return buf
 }
 
-func (slf *UpdateBuilder) Where(conditions Statement) *WhereBuilder {
-	return newWhereWith(slf.SQL(), conditions)
-}
-
 func (slf *UpdateBuilder) YesYesYesForceUpdate() *UpdateBuilder {
 	slf.forceUpdate = true
 	return slf
+}
+
+func (slf *UpdateBuilder) Where(conditions Statement) *WhereBuilder {
+	return newWhereWith(slf.SQL(), conditions)
 }
 
 func (slf *UpdateBuilder) SQL() string {

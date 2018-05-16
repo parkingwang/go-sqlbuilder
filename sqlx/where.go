@@ -28,8 +28,12 @@ func (slf *WhereBuilder) Limit(limit int) *LimitBuilder {
 	return newLimit(slf.SQL(), limit)
 }
 
-func (slf *WhereBuilder) OrderBy(columns ...string) *OrderBuilder {
-	return newOrderBuilder(slf.SQL(), columns...)
+func (slf *WhereBuilder) OrderBy(columns ...string) *OrderByBuilder {
+	return newOrderByBuilder(slf.SQL(), columns...)
+}
+
+func (slf *WhereBuilder) GroupBy(columns ...string) *GroupByBuilder {
+	return newGroupBy(slf.SQL(), columns...)
 }
 
 func (slf *WhereBuilder) Execute(db *sql.DB) *Executor {

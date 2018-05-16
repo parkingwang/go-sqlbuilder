@@ -49,10 +49,11 @@ func (slf *DeleteBuilder) SQL() string {
 }
 
 func (slf *DeleteBuilder) MakeSQL() string {
+	sqlTxt := makeSQL(slf.build())
 	if slf.forceDelete {
-		return makeSQL(slf.build())
+		return sqlTxt
 	} else {
-		panic("Warning for full delete, you should call 'YesYesYesForceDelete()' to ensure.")
+		panic("Warning for FULL-DELETE, you should call 'YesYesYesForceDelete()' to ensure. SQL: " + sqlTxt)
 	}
 }
 

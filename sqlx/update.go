@@ -70,10 +70,11 @@ func (slf *UpdateBuilder) SQL() string {
 }
 
 func (slf *UpdateBuilder) MakeSQL() string {
+	sqlTxt := makeSQL(slf.builder())
 	if slf.forceUpdate {
-		return slf.builder().String()
+		return sqlTxt
 	} else {
-		panic("Warning for full update, you should call 'YesYesYesForceUpdate()' to ensure.")
+		panic("Warning for FULL-UPDATE, you should call 'YesYesYesForceUpdate()' to ensure. SQL: " + sqlTxt)
 	}
 }
 

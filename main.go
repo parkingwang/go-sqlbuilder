@@ -13,11 +13,10 @@ func main() {
 	sql1 := sqlx.Select("id", "username", "password").
 		Distinct().
 		From("t_users").
-		Where().
-		Equal("password").
-		And().EqualTo("username", "yoojia").
-		Or().GreaterEqualThen("age").
-		SQL()
+		Where(sqlx.Group(sqlx.Equal("username").And().Equal("password")).
+			And().
+			Group(sqlx.LessThen("age").Or().In("pickname", "yoojia", "yoojiachen"))).
+		MakeSQL()
 
 	fmt.Println(sql1)
 
@@ -27,14 +26,14 @@ func main() {
 		Column("password").DESC().
 		Limit(10).
 		Offset(20).
-		SQL()
+		MakeSQL()
 
 	fmt.Println(sql2)
 
 	sql3 := sqlx.Insert("t_vehicles").
 		Columns("id", "number", "color").
 		Values(1, "粤BF49883", "YELLOW").
-		SQL()
+		MakeSQL()
 
 	fmt.Println(sql3)
 }

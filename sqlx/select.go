@@ -32,7 +32,7 @@ func (slf *SelectBuilder) From(table string) *SelectBuilder {
 	return slf
 }
 
-func (slf *SelectBuilder) buffer() *bytes.Buffer {
+func (slf *SelectBuilder) build() *bytes.Buffer {
 	buf := new(bytes.Buffer)
 	buf.WriteString("SELECT ")
 
@@ -52,19 +52,23 @@ func (slf *SelectBuilder) buffer() *bytes.Buffer {
 }
 
 func (slf *SelectBuilder) OrderBy(columns ...string) *OrderBuilder {
-	return newOrderBuilder(slf.buffer(), columns...)
+	return newOrderBuilder(slf.SQL(), columns...)
 }
 
-func (slf *SelectBuilder) Where() *WhereBuilder {
-	return newWhere(slf.buffer())
+func (slf *SelectBuilder) Where(conditions Statement) *WhereBuilder {
+	return newWhereWith(slf.SQL(), conditions)
 }
 
 func (slf *SelectBuilder) Limit(limit int) *LimitBuilder {
-	return newLimit(slf.buffer(), limit)
+	return newLimit(slf.SQL(), limit)
 }
 
 func (slf *SelectBuilder) SQL() string {
-	return endpoint(slf.buffer())
+	return slf.build().String()
+}
+
+func (slf *SelectBuilder) MakeSQL() string {
+	return makeSQL(slf.build())
 }
 
 func (slf *SelectBuilder) Execute(db *sql.DB) *Executor {

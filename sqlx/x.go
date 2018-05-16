@@ -25,6 +25,14 @@ func EscapeValue(val interface{}) string {
 	}
 }
 
+func OpEscape(name string, op string, value interface{}) string {
+	return EscapeName(name) + op + EscapeValue(value)
+}
+
+func opIgnore(name string, op string, value string) string {
+	return EscapeName(name) + op + value
+}
+
 func Map0(items []interface{}, mapper func(interface{}) string) []string {
 	newItems := make([]string, len(items))
 	for i, v := range items {

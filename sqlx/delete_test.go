@@ -11,7 +11,7 @@ import (
 func TestDelete(t *testing.T) {
 	sql := Delete("db.t_user").
 		YesYesYesForceDelete().
-		SQL()
+		MakeSQL()
 	checkSQLMatches(sql, "DELETE FROM `db.t_user`;", t)
 }
 
@@ -22,14 +22,12 @@ func TestDeleteShouldPanic(t *testing.T) {
 		}
 	}()
 
-	Delete("db.t_user").SQL()
+	Delete("db.t_user").MakeSQL()
 }
 
 func TestDeleteBuilder_Where(t *testing.T) {
 	sql := Delete("t_users").
-		Where().
-		Equal("username").
-		And().EqualTo("password", "123456").
-		SQL()
+		Where(Equal("username").And().EqualTo("password", "123456")).
+		MakeSQL()
 	checkSQLMatches(sql, "DELETE FROM `t_users` WHERE `username` = ? AND `password` = '123456';", t)
 }

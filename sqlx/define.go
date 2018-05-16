@@ -8,15 +8,19 @@ import (
 //
 // Author: 陈永佳 chenyongjia@parkingwang.com, yoojiachen@gmail.com
 //
-type SQL interface {
+type Statement interface {
 	SQL() string
+}
+
+type MakeSQL interface {
+	MakeSQL() string
 }
 
 type Execute interface {
 	Execute(db *sql.DB) *Executor
 }
 
-func endpoint(buffer *bytes.Buffer) string {
+func makeSQL(buffer *bytes.Buffer) string {
 	buffer.WriteByte(';')
 	return buffer.String()
 }

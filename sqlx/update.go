@@ -56,8 +56,8 @@ func (slf *UpdateBuilder) builder() *bytes.Buffer {
 	return buf
 }
 
-func (slf *UpdateBuilder) Where() *WhereBuilder {
-	return newWhere(slf.builder())
+func (slf *UpdateBuilder) Where(conditions Statement) *WhereBuilder {
+	return newWhereWith(slf.SQL(), conditions)
 }
 
 func (slf *UpdateBuilder) YesYesYesForceUpdate() *UpdateBuilder {
@@ -66,8 +66,12 @@ func (slf *UpdateBuilder) YesYesYesForceUpdate() *UpdateBuilder {
 }
 
 func (slf *UpdateBuilder) SQL() string {
+	return slf.builder().String()
+}
+
+func (slf *UpdateBuilder) MakeSQL() string {
 	if slf.forceUpdate {
-		return endpoint(slf.builder())
+		return slf.builder().String()
 	} else {
 		panic("Warning for full update, you should call 'YesYesYesForceUpdate()' to ensure.")
 	}

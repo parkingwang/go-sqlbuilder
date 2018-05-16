@@ -25,7 +25,7 @@ func (slf *DeleteBuilder) Table(table string) *DeleteBuilder {
 	return slf
 }
 
-func (slf *DeleteBuilder) builder() *bytes.Buffer {
+func (slf *DeleteBuilder) build() *bytes.Buffer {
 	if "" == slf.table {
 		panic("Table name not found, you should call 'Table(table)' method to set it")
 	}
@@ -35,8 +35,8 @@ func (slf *DeleteBuilder) builder() *bytes.Buffer {
 	return buf
 }
 
-func (slf *DeleteBuilder) Where() *WhereBuilder {
-	return newWhere(slf.builder())
+func (slf *DeleteBuilder) Where(conditions Statement) *WhereBuilder {
+	return newWhereWith(slf.SQL(), conditions)
 }
 
 func (slf *DeleteBuilder) YesYesYesForceDelete() *DeleteBuilder {
@@ -45,10 +45,14 @@ func (slf *DeleteBuilder) YesYesYesForceDelete() *DeleteBuilder {
 }
 
 func (slf *DeleteBuilder) SQL() string {
+	return slf.build().String()
+}
+
+func (slf *DeleteBuilder) MakeSQL() string {
 	if slf.forceDelete {
-		return endpoint(slf.builder())
+		return makeSQL(slf.build())
 	} else {
-		panic("Warning for full delete, you should call 'YesYesForceDelete()' to ensure.")
+		panic("Warning for full delete, you should call 'YesYesYesForceDelete()' to ensure.")
 	}
 }
 

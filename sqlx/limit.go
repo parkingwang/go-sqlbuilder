@@ -14,10 +14,11 @@ type LimitBuilder struct {
 	buffer *bytes.Buffer
 }
 
-func newLimit(buffer *bytes.Buffer, limit int) *LimitBuilder {
+func newLimit(existsSQL string, limit int) *LimitBuilder {
 	lb := &LimitBuilder{
-		buffer: buffer,
+		buffer: new(bytes.Buffer),
 	}
+	lb.buffer.WriteString(existsSQL)
 	lb.buffer.WriteString(" LIMIT ")
 	lb.buffer.WriteString(fmt.Sprintf("%d", limit))
 	return lb
@@ -30,7 +31,11 @@ func (slf *LimitBuilder) Offset(offset int) *LimitBuilder {
 }
 
 func (slf *LimitBuilder) SQL() string {
-	return endpoint(slf.buffer)
+	return slf.buffer.String()
+}
+
+func (slf *LimitBuilder) MakeSQL() string {
+	return makeSQL(slf.buffer)
 }
 
 func (slf *LimitBuilder) Execute(db *sql.DB) *Executor {

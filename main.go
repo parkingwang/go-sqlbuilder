@@ -13,9 +13,9 @@ func main() {
 	sql1 := sqlx.Select("id", "username", "password").
 		Distinct().
 		From("t_users").
-		Where(sqlx.Group(sqlx.Equal("username").And().Equal("password")).
+		Where(sqlx.Group(sqlx.Equal("username").And().EqualTo("password", "123456")).
 			And().
-			Group(sqlx.LessThen("age").Or().In("pickname", "yoojia", "yoojiachen"))).
+			Group(sqlx.LessThen("age").Or().In("nick_name", "yoojia", "yoojiachen"))).
 		MakeSQL()
 
 	fmt.Println(sql1)
@@ -32,7 +32,7 @@ func main() {
 
 	sql3 := sqlx.Insert("t_vehicles").
 		Columns("id", "number", "color").
-		Values(1, "粤BF49883", "YELLOW").
+		Values(1, "粤BF49883", "GREEN").
 		MakeSQL()
 
 	fmt.Println(sql3)

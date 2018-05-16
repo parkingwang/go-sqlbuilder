@@ -21,9 +21,9 @@ func main() {
 	sql1 := sqlx.Select("id", "username", "password").
         Distinct().
         From("t_users").
-        Where(sqlx.Group(sqlx.Equal("username").And().Equal("password")).
+        Where(sqlx.Group(sqlx.Equal("username").And().EqualTo("password", "123456")).
             And().
-            Group(sqlx.LessThen("age").Or().In("pickname", "yoojia", "yoojiachen"))).
+            Group(sqlx.LessThen("age").Or().In("nick_name", "yoojia", "yoojiachen"))).
         MakeSQL()
 
     fmt.Println(sql1)
@@ -40,7 +40,7 @@ func main() {
 
     sql3 := sqlx.Insert("t_vehicles").
         Columns("id", "number", "color").
-        Values(1, "粤BF49883", "YELLOW").
+        Values(1, "粤BF49883", "GREEN").
         MakeSQL()
 
     fmt.Println(sql3)
@@ -51,11 +51,11 @@ func main() {
 
 ```sql
 SELECT DISTINCT `id`,`username`,`password` FROM `t_users`
-    WHERE (`username` = ? AND `password` = ?) AND (`age` < ? OR `pickname` IN ('yoojia','yoojiachen'));
+    WHERE (`username` = ? AND `password` = '123456') AND (`age` < ? OR `nick_name` IN ('yoojia','yoojiachen'));
 
 SELECT * FROM `t_users` ORDER BY `username` ASC, `password` DESC LIMIT 10 OFFSET 20;
 
-INSERT INTO `t_vehicles`(`id`,`number`,`color`) VALUES (1,'粤BF49883','YELLOW');
+INSERT INTO `t_vehicles`(`id`,`number`,`color`) VALUES (1,'粤BF49883','GREEN');
 ```
 
 ## License

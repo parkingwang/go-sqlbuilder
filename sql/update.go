@@ -2,6 +2,7 @@ package sql
 
 import (
 	"bytes"
+	"database/sql"
 	"strings"
 )
 
@@ -21,53 +22,57 @@ func Update(table string) *UpdateBuilder {
 	}).Table(table)
 }
 
-func (ub *UpdateBuilder) Table(table string) *UpdateBuilder {
-	ub.table = table
-	return ub
+func (slf *UpdateBuilder) Table(table string) *UpdateBuilder {
+	slf.table = table
+	return slf
 }
 
-func (ub *UpdateBuilder) Columns(columns ...string) *UpdateBuilder {
+func (slf *UpdateBuilder) Columns(columns ...string) *UpdateBuilder {
 	if len(columns) == 0 {
 		panic("Columns is required for update")
 	}
-	ub.columns = Map(columns, func(column string) string {
+	slf.columns = Map(columns, func(column string) string {
 		return EscapeName(column) + "=?"
 	})
-	return ub
+	return slf
 }
 
-func (ub *UpdateBuilder) ColumnAndValue(column string, value interface{}) *UpdateBuilder {
-	ub.columns = append(ub.columns, func() string {
+func (slf *UpdateBuilder) ColumnAndValue(column string, value interface{}) *UpdateBuilder {
+	slf.columns = append(slf.columns, func() string {
 		return EscapeName(column) + "=" + EscapeValue(value)
 	}())
-	return ub
+	return slf
 }
 
-func (ub *UpdateBuilder) builder() *bytes.Buffer {
-	if "" == ub.table {
+func (slf *UpdateBuilder) builder() *bytes.Buffer {
+	if "" == slf.table {
 		panic("Table name not found, you should call 'Table(table)' method to set it")
 	}
 	buf := new(bytes.Buffer)
 	buf.WriteString("UPDATE ")
-	buf.WriteString(EscapeName(ub.table))
+	buf.WriteString(EscapeName(slf.table))
 	buf.WriteString(" SET ")
-	buf.WriteString(strings.Join(ub.columns, ","))
+	buf.WriteString(strings.Join(slf.columns, ","))
 	return buf
 }
 
-func (ub *UpdateBuilder) Where() *WhereBuilder {
-	return newWhere(ub.builder())
+func (slf *UpdateBuilder) Where() *WhereBuilder {
+	return newWhere(slf.builder())
 }
 
-func (ub *UpdateBuilder) YesYesYesForceUpdate() *UpdateBuilder {
-	ub.forceUpdate = true
-	return ub
+func (slf *UpdateBuilder) YesYesYesForceUpdate() *UpdateBuilder {
+	slf.forceUpdate = true
+	return slf
 }
 
-func (ub *UpdateBuilder) SQL() string {
-	if ub.forceUpdate {
-		return endpoint(ub.builder())
+func (slf *UpdateBuilder) SQL() string {
+	if slf.forceUpdate {
+		return endpoint(slf.builder())
 	} else {
 		panic("Warning for full update, you should call 'YesYesYesForceUpdate()' to ensure.")
 	}
+}
+
+func (slf *UpdateBuilder) Execute(db *sql.DB) *Executor {
+	return newExecute(slf.SQL(), db)
 }

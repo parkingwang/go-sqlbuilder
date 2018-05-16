@@ -2,6 +2,7 @@ package sql
 
 import (
 	"bytes"
+	"database/sql"
 )
 
 //
@@ -19,34 +20,38 @@ func Delete(table string) *DeleteBuilder {
 	}
 }
 
-func (ub *DeleteBuilder) Table(table string) *DeleteBuilder {
-	ub.table = table
-	return ub
+func (slf *DeleteBuilder) Table(table string) *DeleteBuilder {
+	slf.table = table
+	return slf
 }
 
-func (ub *DeleteBuilder) builder() *bytes.Buffer {
-	if "" == ub.table {
+func (slf *DeleteBuilder) builder() *bytes.Buffer {
+	if "" == slf.table {
 		panic("Table name not found, you should call 'Table(table)' method to set it")
 	}
 	buf := new(bytes.Buffer)
 	buf.WriteString("DELETE FROM ")
-	buf.WriteString(EscapeName(ub.table))
+	buf.WriteString(EscapeName(slf.table))
 	return buf
 }
 
-func (ub *DeleteBuilder) Where() *WhereBuilder {
-	return newWhere(ub.builder())
+func (slf *DeleteBuilder) Where() *WhereBuilder {
+	return newWhere(slf.builder())
 }
 
-func (ub *DeleteBuilder) YesYesYesForceDelete() *DeleteBuilder {
-	ub.forceDelete = true
-	return ub
+func (slf *DeleteBuilder) YesYesYesForceDelete() *DeleteBuilder {
+	slf.forceDelete = true
+	return slf
 }
 
-func (ub *DeleteBuilder) SQL() string {
-	if ub.forceDelete {
-		return endpoint(ub.builder())
+func (slf *DeleteBuilder) SQL() string {
+	if slf.forceDelete {
+		return endpoint(slf.builder())
 	} else {
 		panic("Warning for full delete, you should call 'YesYesForceDelete()' to ensure.")
 	}
+}
+
+func (slf *DeleteBuilder) Execute(db *sql.DB) *Executor {
+	return newExecute(slf.SQL(), db)
 }

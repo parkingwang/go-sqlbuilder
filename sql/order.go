@@ -2,6 +2,7 @@ package sql
 
 import (
 	"bytes"
+	"database/sql"
 	"strings"
 )
 
@@ -27,26 +28,30 @@ func newOrderBuilder(writer *bytes.Buffer, columns ...string) *OrderBuilder {
 	return ob
 }
 
-func (ob *OrderBuilder) Column(column string) *OrderBuilder {
-	ob.buffer.WriteString(", ")
-	ob.buffer.WriteString(EscapeName(column))
-	return ob
+func (slf *OrderBuilder) Column(column string) *OrderBuilder {
+	slf.buffer.WriteString(", ")
+	slf.buffer.WriteString(EscapeName(column))
+	return slf
 }
 
-func (ob *OrderBuilder) ASC() *OrderBuilder {
-	ob.buffer.WriteString(" ASC")
-	return ob
+func (slf *OrderBuilder) ASC() *OrderBuilder {
+	slf.buffer.WriteString(" ASC")
+	return slf
 }
 
-func (ob *OrderBuilder) DESC() *OrderBuilder {
-	ob.buffer.WriteString(" DESC")
-	return ob
+func (slf *OrderBuilder) DESC() *OrderBuilder {
+	slf.buffer.WriteString(" DESC")
+	return slf
 }
 
-func (ob *OrderBuilder) Limit(limit int) *LimitBuilder {
-	return newLimit(ob.buffer, limit)
+func (slf *OrderBuilder) Limit(limit int) *LimitBuilder {
+	return newLimit(slf.buffer, limit)
 }
 
-func (ob *OrderBuilder) SQL() string {
-	return endpoint(ob.buffer)
+func (slf *OrderBuilder) SQL() string {
+	return endpoint(slf.buffer)
+}
+
+func (slf *OrderBuilder) Execute(db *sql.DB) *Executor {
+	return newExecute(slf.SQL(), db)
 }

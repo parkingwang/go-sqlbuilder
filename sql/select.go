@@ -2,6 +2,7 @@ package sql
 
 import (
 	"bytes"
+	"database/sql"
 	"strings"
 )
 
@@ -21,47 +22,51 @@ func Select(columns ...string) *SelectBuilder {
 	}
 }
 
-func (sb *SelectBuilder) Distinct() *SelectBuilder {
-	sb.distinct = true
-	return sb
+func (slf *SelectBuilder) Distinct() *SelectBuilder {
+	slf.distinct = true
+	return slf
 }
 
-func (sb *SelectBuilder) From(table string) *SelectBuilder {
-	sb.table = table
-	return sb
+func (slf *SelectBuilder) From(table string) *SelectBuilder {
+	slf.table = table
+	return slf
 }
 
-func (sb *SelectBuilder) buffer() *bytes.Buffer {
+func (slf *SelectBuilder) buffer() *bytes.Buffer {
 	buf := new(bytes.Buffer)
 	buf.WriteString("SELECT ")
 
-	if sb.distinct {
+	if slf.distinct {
 		buf.WriteString("DISTINCT ")
 	}
 
-	if len(sb.columns) == 0 {
+	if len(slf.columns) == 0 {
 		buf.WriteByte('*')
 	} else {
-		buf.WriteString(strings.Join(Map(sb.columns, EscapeName), ","))
+		buf.WriteString(strings.Join(Map(slf.columns, EscapeName), ","))
 	}
 
 	buf.WriteString(" FROM ")
-	buf.WriteString(EscapeName(sb.table))
+	buf.WriteString(EscapeName(slf.table))
 	return buf
 }
 
-func (sb *SelectBuilder) OrderBy(columns ...string) *OrderBuilder {
-	return newOrderBuilder(sb.buffer(), columns...)
+func (slf *SelectBuilder) OrderBy(columns ...string) *OrderBuilder {
+	return newOrderBuilder(slf.buffer(), columns...)
 }
 
-func (sb *SelectBuilder) Where() *WhereBuilder {
-	return newWhere(sb.buffer())
+func (slf *SelectBuilder) Where() *WhereBuilder {
+	return newWhere(slf.buffer())
 }
 
-func (sb *SelectBuilder) Limit(limit int) *LimitBuilder {
-	return newLimit(sb.buffer(), limit)
+func (slf *SelectBuilder) Limit(limit int) *LimitBuilder {
+	return newLimit(slf.buffer(), limit)
 }
 
-func (sb *SelectBuilder) SQL() string {
-	return endpoint(sb.buffer())
+func (slf *SelectBuilder) SQL() string {
+	return endpoint(slf.buffer())
+}
+
+func (slf *SelectBuilder) Execute(db *sql.DB) *Executor {
+	return newExecute(slf.SQL(), db)
 }

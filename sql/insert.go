@@ -2,6 +2,7 @@ package sql
 
 import (
 	"bytes"
+	"database/sql"
 	"strings"
 )
 
@@ -23,48 +24,52 @@ func InsertInto(table string) *InsertBuilder {
 	}
 }
 
-func (ib *InsertBuilder) Table(table string) *InsertBuilder {
-	ib.table = table
-	return ib
+func (slf *InsertBuilder) Table(table string) *InsertBuilder {
+	slf.table = table
+	return slf
 }
 
-func (ib *InsertBuilder) Columns(columns ...string) *InsertBuilder {
+func (slf *InsertBuilder) Columns(columns ...string) *InsertBuilder {
 	for _, col := range columns {
-		ib.columns = append(ib.columns, col)
-		ib.values = append(ib.values, "?")
+		slf.columns = append(slf.columns, col)
+		slf.values = append(slf.values, "?")
 	}
-	return ib
+	return slf
 }
 
-func (ib *InsertBuilder) Values(values ...interface{}) *InsertBuilder {
+func (slf *InsertBuilder) Values(values ...interface{}) *InsertBuilder {
 	// check columns and values
-	if len(ib.columns) != len(ib.values) {
+	if len(slf.columns) != len(slf.values) {
 		panic("length of columns and values NOT MATCH")
 	}
 	for i, newVal := range values {
-		ib.values[i] = newVal
+		slf.values[i] = newVal
 	}
-	return ib
+	return slf
 }
 
-func (ib *InsertBuilder) builder() *bytes.Buffer {
-	if "" == ib.table {
+func (slf *InsertBuilder) builder() *bytes.Buffer {
+	if "" == slf.table {
 		panic("table not found, you should call 'Table(table)' method to set it")
 	}
 
 	buf := new(bytes.Buffer)
 	buf.WriteString("INSERT INTO ")
-	buf.WriteString(EscapeName(ib.table))
+	buf.WriteString(EscapeName(slf.table))
 	buf.WriteByte('(')
-	buf.WriteString(strings.Join(Map(ib.columns, EscapeName), ","))
+	buf.WriteString(strings.Join(Map(slf.columns, EscapeName), ","))
 	buf.WriteByte(')')
 	buf.WriteString(" VALUES ")
 	buf.WriteByte('(')
-	buf.WriteString(strings.Join(Map0(ib.values, EscapeValue), ","))
+	buf.WriteString(strings.Join(Map0(slf.values, EscapeValue), ","))
 	buf.WriteByte(')')
 	return buf
 }
 
-func (ib *InsertBuilder) SQL() string {
-	return endpoint(ib.builder())
+func (slf *InsertBuilder) SQL() string {
+	return endpoint(slf.builder())
+}
+
+func (slf *InsertBuilder) Execute(db *sql.DB) *Executor {
+	return newExecute(slf.SQL(), db)
 }

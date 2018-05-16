@@ -2,6 +2,7 @@ package sql
 
 import (
 	"bytes"
+	"database/sql"
 )
 
 //
@@ -13,24 +14,28 @@ type CondLinker struct {
 	whereBuilder *WhereBuilder
 }
 
-func (cb *CondLinker) And() *WhereBuilder {
-	return cb.whereBuilder.and()
+func (slf *CondLinker) And() *WhereBuilder {
+	return slf.whereBuilder.and()
 }
 
-func (cb *CondLinker) Or() *WhereBuilder {
-	return cb.whereBuilder.or()
+func (slf *CondLinker) Or() *WhereBuilder {
+	return slf.whereBuilder.or()
 }
 
-func (cb *CondLinker) Limit(limit int) *LimitBuilder {
-	return newLimit(cb.whereBuilder.buffer, limit)
+func (slf *CondLinker) Limit(limit int) *LimitBuilder {
+	return newLimit(slf.whereBuilder.buffer, limit)
 }
 
-func (cb *CondLinker) OrderBy(columns ...string) *OrderBuilder {
-	return newOrderBuilder(cb.whereBuilder.buffer, columns...)
+func (slf *CondLinker) OrderBy(columns ...string) *OrderBuilder {
+	return newOrderBuilder(slf.whereBuilder.buffer, columns...)
 }
 
-func (cb *CondLinker) SQL() string {
-	return cb.whereBuilder.SQL()
+func (slf *CondLinker) SQL() string {
+	return slf.whereBuilder.SQL()
+}
+
+func (slf *CondLinker) Execute(db *sql.DB) *Executor {
+	return newExecute(slf.SQL(), db)
 }
 
 ////
@@ -52,83 +57,87 @@ func newWhere(statement *bytes.Buffer) *WhereBuilder {
 	return wb
 }
 
-func (wb *WhereBuilder) Equal(column string) *CondLinker {
-	return wb.op(column, " = ").linker
+func (slf *WhereBuilder) Equal(column string) *CondLinker {
+	return slf.op(column, " = ").linker
 }
 
-func (wb *WhereBuilder) EqualTo(column string, value interface{}) *CondLinker {
-	return wb.opTo(column, " = ", value).linker
+func (slf *WhereBuilder) EqualTo(column string, value interface{}) *CondLinker {
+	return slf.opTo(column, " = ", value).linker
 }
 
-func (wb *WhereBuilder) NotEqual(column string) *CondLinker {
-	return wb.op(column, " <> ").linker
+func (slf *WhereBuilder) NotEqual(column string) *CondLinker {
+	return slf.op(column, " <> ").linker
 }
 
-func (wb *WhereBuilder) NotEqualTo(column string, value interface{}) *CondLinker {
-	return wb.opTo(column, " <> ", value).linker
+func (slf *WhereBuilder) NotEqualTo(column string, value interface{}) *CondLinker {
+	return slf.opTo(column, " <> ", value).linker
 }
 
-func (wb *WhereBuilder) GreaterThen(column string) *CondLinker {
-	return wb.op(column, " > ").linker
+func (slf *WhereBuilder) GreaterThen(column string) *CondLinker {
+	return slf.op(column, " > ").linker
 }
 
-func (wb *WhereBuilder) GreaterThenTo(column string, value interface{}) *CondLinker {
-	return wb.opTo(column, " > ", value).linker
+func (slf *WhereBuilder) GreaterThenTo(column string, value interface{}) *CondLinker {
+	return slf.opTo(column, " > ", value).linker
 }
 
-func (wb *WhereBuilder) GreaterEqualThen(column string) *CondLinker {
-	return wb.op(column, " >= ").linker
+func (slf *WhereBuilder) GreaterEqualThen(column string) *CondLinker {
+	return slf.op(column, " >= ").linker
 }
 
-func (wb *WhereBuilder) GreaterEqualThenTo(column string, value interface{}) *CondLinker {
-	return wb.opTo(column, " >= ", value).linker
+func (slf *WhereBuilder) GreaterEqualThenTo(column string, value interface{}) *CondLinker {
+	return slf.opTo(column, " >= ", value).linker
 }
 
-func (wb *WhereBuilder) LessThen(column string) *CondLinker {
-	return wb.op(column, " < ").linker
+func (slf *WhereBuilder) LessThen(column string) *CondLinker {
+	return slf.op(column, " < ").linker
 }
 
-func (wb *WhereBuilder) LessThenTo(column string, value interface{}) *CondLinker {
-	return wb.opTo(column, " < ", value).linker
+func (slf *WhereBuilder) LessThenTo(column string, value interface{}) *CondLinker {
+	return slf.opTo(column, " < ", value).linker
 }
 
-func (wb *WhereBuilder) LessEqualThen(column string) *CondLinker {
-	return wb.op(column, " <= ").linker
+func (slf *WhereBuilder) LessEqualThen(column string) *CondLinker {
+	return slf.op(column, " <= ").linker
 }
 
-func (wb *WhereBuilder) LessEqualTo(column string, value interface{}) *CondLinker {
-	return wb.opTo(column, " <= ", value).linker
-}
-
-//
-
-func (wb *WhereBuilder) and() *WhereBuilder {
-	wb.buffer.WriteString(" AND ")
-	return wb
-}
-
-func (wb *WhereBuilder) or() *WhereBuilder {
-	wb.buffer.WriteString(" OR ")
-	return wb
-}
-
-func (wb *WhereBuilder) op(column string, op string) *WhereBuilder {
-	return wb.opTo(column, op, "?")
-}
-
-func (wb *WhereBuilder) opTo(column string, op string, val interface{}) *WhereBuilder {
-	wb.buffer.WriteString(EscapeName(column))
-	wb.buffer.WriteString(op)
-	wb.buffer.WriteString(EscapeValue(val))
-	return wb
+func (slf *WhereBuilder) LessEqualTo(column string, value interface{}) *CondLinker {
+	return slf.opTo(column, " <= ", value).linker
 }
 
 //
 
-func (wb *WhereBuilder) Limit(limit int) *LimitBuilder {
-	return newLimit(wb.buffer, limit)
+func (slf *WhereBuilder) and() *WhereBuilder {
+	slf.buffer.WriteString(" AND ")
+	return slf
 }
 
-func (wb *WhereBuilder) SQL() string {
-	return endpoint(wb.buffer)
+func (slf *WhereBuilder) or() *WhereBuilder {
+	slf.buffer.WriteString(" OR ")
+	return slf
+}
+
+func (slf *WhereBuilder) op(column string, op string) *WhereBuilder {
+	return slf.opTo(column, op, "?")
+}
+
+func (slf *WhereBuilder) opTo(column string, op string, val interface{}) *WhereBuilder {
+	slf.buffer.WriteString(EscapeName(column))
+	slf.buffer.WriteString(op)
+	slf.buffer.WriteString(EscapeValue(val))
+	return slf
+}
+
+//
+
+func (slf *WhereBuilder) Limit(limit int) *LimitBuilder {
+	return newLimit(slf.buffer, limit)
+}
+
+func (slf *WhereBuilder) SQL() string {
+	return endpoint(slf.buffer)
+}
+
+func (slf *WhereBuilder) Execute(db *sql.DB) *Executor {
+	return newExecute(slf.SQL(), db)
 }

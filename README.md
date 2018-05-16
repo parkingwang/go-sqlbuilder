@@ -13,32 +13,48 @@
 ## Usage
 
 ```go
-sql1 := sql.Select("id", "username", "password").
-    Distinct().
-    From("t_users").
-    Where().
-    Equal("password").
-    And().EqualTo("username", "yoojia").
-    Or().GreaterEqualThen("age").
-    SQL()
 
-fmt.Println(sql1)
+import "github.com/go-sqlbuilder/sqlx"
 
-sql2 := sql.Select().
-    From("t_users").
-    OrderBy("username").ASC().
-    Column("password").DESC().
-    Limit(10).
-    Offset(20)
+func main() {
+	sql1 := sqlx.Select("id", "username", "password").
+		Distinct().
+		From("t_users").
+		Where().
+		Equal("password").
+		And().EqualTo("username", "yoojia").
+		Or().GreaterEqualThen("age").
+		SQL()
 
-fmt.Println(sql2)
+	fmt.Println(sql1)
 
-sql3 := sql.InsertInto("t_vehicles").
-    Columns("id", "number", "color").
-    Values(1, "粤BF49883", "YELLOW").
-    SQL()
+	sql2 := sqlx.Select().
+		From("t_users").
+		OrderBy("username").ASC().
+		Column("password").DESC().
+		Limit(10).
+		Offset(20).
+		SQL()
 
-fmt.Println(sql3)
+	fmt.Println(sql2)
+
+	sql3 := sqlx.Insert("t_vehicles").
+		Columns("id", "number", "color").
+		Values(1, "粤BF49883", "YELLOW").
+		SQL()
+
+	fmt.Println(sql3)
+}
+```
+
+输出结果如下：
+
+```sql
+SELECT DISTINCT `id`,`username`,`password` FROM `t_users` WHERE `password` = ? AND `username` = 'yoojia' OR `age` >= ?;
+
+SELECT * FROM `t_users` ORDER BY `username` ASC, `password` DESC LIMIT 10 OFFSET 20;
+
+INSERT INTO `t_vehicles`(`id`,`number`,`color`) VALUES (1,'粤BF49883','YELLOW');
 ```
 
 ## License

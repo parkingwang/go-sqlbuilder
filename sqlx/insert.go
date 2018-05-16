@@ -1,4 +1,4 @@
-package sql
+package sqlx
 
 import (
 	"bytes"
@@ -16,7 +16,7 @@ type InsertBuilder struct {
 	values  []interface{}
 }
 
-func InsertInto(table string) *InsertBuilder {
+func Insert(table string) *InsertBuilder {
 	return &InsertBuilder{
 		table:   table,
 		columns: make([]string, 0),

@@ -1,4 +1,4 @@
-package sql
+package sqlx
 
 import "fmt"
 
@@ -6,11 +6,11 @@ import "fmt"
 // Author: 陈永佳 chenyongjia@parkingwang.com, yoojiachen@gmail.com
 //
 
-func EscapeName(column string) string {
-	if len(column) == 0 {
-		panic("Empty column name")
+func EscapeName(name string) string {
+	if len(name) == 0 {
+		panic("Empty name")
 	}
-	return "`" + column + "`"
+	return "`" + name + "`"
 }
 
 func EscapeValue(val interface{}) string {

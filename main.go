@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/go-sqlbuilder/sql"
+	"github.com/go-sqlbuilder/sqlx"
 )
 
 //
@@ -10,7 +10,7 @@ import (
 //
 
 func main() {
-	sql1 := sql.Select("id", "username", "password").
+	sql1 := sqlx.Select("id", "username", "password").
 		Distinct().
 		From("t_users").
 		Where().
@@ -21,16 +21,17 @@ func main() {
 
 	fmt.Println(sql1)
 
-	sql2 := sql.Select().
+	sql2 := sqlx.Select().
 		From("t_users").
 		OrderBy("username").ASC().
 		Column("password").DESC().
 		Limit(10).
-		Offset(20)
+		Offset(20).
+		SQL()
 
 	fmt.Println(sql2)
 
-	sql3 := sql.InsertInto("t_vehicles").
+	sql3 := sqlx.Insert("t_vehicles").
 		Columns("id", "number", "color").
 		Values(1, "粤BF49883", "YELLOW").
 		SQL()

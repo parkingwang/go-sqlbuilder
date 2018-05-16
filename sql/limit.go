@@ -22,10 +22,10 @@ func newLimit(buffer *bytes.Buffer, limit int) *LimitBuilder {
 	return lb
 }
 
-func (lb *LimitBuilder) Offset(offset int) string {
+func (lb *LimitBuilder) Offset(offset int) *LimitBuilder {
 	lb.buffer.WriteString(" OFFSET ")
 	lb.buffer.WriteString(fmt.Sprintf("%d", offset))
-	return endpoint(lb.buffer)
+	return lb
 }
 
 func (lb *LimitBuilder) SQL() string {

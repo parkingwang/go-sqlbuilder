@@ -1,11 +1,25 @@
 package sql
 
+import "fmt"
+
 //
 // Author: 陈永佳 chenyongjia@parkingwang.com, yoojiachen@gmail.com
 //
 
-func Escape(column string) string {
+func EscapeColumn(column string) string {
 	return "`" + column + "`"
+}
+
+func EscapeValue(val interface{}) string {
+	if str, ok := val.(string); ok {
+		if "?" == str {
+			return str
+		}else{
+			return "'" + str + "'"
+		}
+	}else{
+		return fmt.Sprintf("%v", val)
+	}
 }
 
 func Map(items []string, mapper func(string) string) []string {

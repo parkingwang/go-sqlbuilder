@@ -21,6 +21,14 @@ func (cb *CondLinker) Or() *WhereBuilder {
 	return cb.whereBuilder.or()
 }
 
+func (cb *CondLinker) Limit(limit int) *LimitBuilder {
+	return newLimit(cb.whereBuilder.buffer, limit)
+}
+
+func (cb *CondLinker) OrderBy(columns ...string) *OrderBuilder {
+	return newOrderBuilder(cb.whereBuilder.buffer, columns...)
+}
+
 func (cb *CondLinker) SQL() string {
 	return cb.whereBuilder.SQL()
 }

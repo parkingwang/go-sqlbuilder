@@ -1,9 +1,15 @@
 # Go-SQLBuilder
 
-以SQL语法顺序，使用流式API来创建SQL语句。
+`Go-SQLBuilder`是一个提供系列灵活的、与SQL语法一致的SQL语句构建工具函数库。
 
-## Features
+## 目标
 
+`GoSQLBuilder`的目标是提供一个简洁灵活的工具集，可以与SQL语法顺序一致地使用，并生成SQL语句，供database/sql原生数据库操作函数使用。
+最显著的是，生成的SQL语句，最大限度使用占位符号，并使用`sql.DB.Query(args)`和`sql.DB.Exec(args)`来设值避免SQL注入等问题。
+
+## 支持特性
+
+- 已支持MySQL基本Select/Update/Insert/Delete/Where等语法；
 - 目前只支持MySQL语法；
 - 未支持多表查询；
 

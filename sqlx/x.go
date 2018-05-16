@@ -1,6 +1,9 @@
 package sqlx
 
-import "fmt"
+import (
+	"bytes"
+	"fmt"
+)
 
 //
 // Author: 陈永佳 chenyongjia@parkingwang.com, yoojiachen@gmail.com
@@ -25,14 +28,6 @@ func EscapeValue(val interface{}) string {
 	}
 }
 
-func OpEscape(name string, op string, value interface{}) string {
-	return EscapeName(name) + op + EscapeValue(value)
-}
-
-func opIgnore(name string, op string, value string) string {
-	return EscapeName(name) + op + value
-}
-
 func Map0(items []interface{}, mapper func(interface{}) string) []string {
 	newItems := make([]string, len(items))
 	for i, v := range items {
@@ -47,4 +42,17 @@ func Map(items []string, mapper func(string) string) []string {
 		newItems[i] = mapper(v)
 	}
 	return newItems
+}
+
+func opEscape(name string, op string, value interface{}) string {
+	return EscapeName(name) + op + EscapeValue(value)
+}
+
+func opIgnore(name string, op string, value string) string {
+	return EscapeName(name) + op + value
+}
+
+func makeSQL(buffer *bytes.Buffer) string {
+	buffer.WriteByte(';')
+	return buffer.String()
 }

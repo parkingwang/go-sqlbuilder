@@ -78,5 +78,5 @@ func (slf *UpdateBuilder) MakeSQL() string {
 }
 
 func (slf *UpdateBuilder) Execute(db *sql.DB) *Executor {
-	return newExecute(slf.SQL(), db)
+	return newExecute(slf.MakeSQL(), db)
 }

@@ -40,7 +40,7 @@ func Equal(column string) *Condition {
 }
 
 func (slf *Condition) Equal(column string) *Condition {
-	slf.buffer.WriteString(OpEscape(column, " = ", "?"))
+	slf.buffer.WriteString(opEscape(column, " = ", "?"))
 	return slf
 }
 
@@ -49,7 +49,7 @@ func EqualTo(column string, value interface{}) *Condition {
 }
 
 func (slf *Condition) EqualTo(column string, value interface{}) *Condition {
-	slf.buffer.WriteString(OpEscape(column, " = ", value))
+	slf.buffer.WriteString(opEscape(column, " = ", value))
 	return slf
 }
 
@@ -58,7 +58,7 @@ func NotEqual(column string) *Condition {
 }
 
 func (slf *Condition) NotEqual(column string) *Condition {
-	slf.buffer.WriteString(OpEscape(column, " <> ", "?"))
+	slf.buffer.WriteString(opEscape(column, " <> ", "?"))
 	return slf
 }
 
@@ -67,7 +67,7 @@ func NotEqualTo(column string, value interface{}) *Condition {
 }
 
 func (slf *Condition) NotEqualTo(column string, value interface{}) *Condition {
-	slf.buffer.WriteString(OpEscape(column, " <> ", value))
+	slf.buffer.WriteString(opEscape(column, " <> ", value))
 	return slf
 }
 
@@ -76,7 +76,7 @@ func GreaterThen(column string) *Condition {
 }
 
 func (slf *Condition) GreaterThen(column string) *Condition {
-	slf.buffer.WriteString(OpEscape(column, " > ", "?"))
+	slf.buffer.WriteString(opEscape(column, " > ", "?"))
 	return slf
 }
 
@@ -85,7 +85,7 @@ func GreaterThenTo(column string, value interface{}) *Condition {
 }
 
 func (slf *Condition) GreaterThenTo(column string, value interface{}) *Condition {
-	slf.buffer.WriteString(OpEscape(column, " > ", value))
+	slf.buffer.WriteString(opEscape(column, " > ", value))
 	return slf
 }
 
@@ -94,7 +94,7 @@ func GreaterEqualThen(column string) *Condition {
 }
 
 func (slf *Condition) GreaterEqualThen(column string) *Condition {
-	slf.buffer.WriteString(OpEscape(column, " >= ", "?"))
+	slf.buffer.WriteString(opEscape(column, " >= ", "?"))
 	return slf
 }
 
@@ -103,7 +103,7 @@ func GreaterEqualThenTo(column string, value interface{}) *Condition {
 }
 
 func (slf *Condition) GreaterEqualThenTo(column string, value interface{}) *Condition {
-	slf.buffer.WriteString(OpEscape(column, " >= ", value))
+	slf.buffer.WriteString(opEscape(column, " >= ", value))
 	return slf
 }
 
@@ -112,7 +112,7 @@ func LessThen(column string) *Condition {
 }
 
 func (slf *Condition) LessThen(column string) *Condition {
-	slf.buffer.WriteString(OpEscape(column, " < ", "?"))
+	slf.buffer.WriteString(opEscape(column, " < ", "?"))
 	return slf
 }
 
@@ -121,7 +121,7 @@ func LessThenTo(column string, value interface{}) *Condition {
 }
 
 func (slf *Condition) LessThenTo(column string, value interface{}) *Condition {
-	slf.buffer.WriteString(OpEscape(column, " < ", value))
+	slf.buffer.WriteString(opEscape(column, " < ", value))
 	return slf
 }
 
@@ -130,7 +130,7 @@ func LessEqualThen(column string) *Condition {
 }
 
 func (slf *Condition) LessEqualThen(column string) *Condition {
-	slf.buffer.WriteString(OpEscape(column, " <= ", "?"))
+	slf.buffer.WriteString(opEscape(column, " <= ", "?"))
 	return slf
 }
 
@@ -139,14 +139,14 @@ func LessEqualThenTo(column string, value interface{}) *Condition {
 }
 
 func (slf *Condition) LessEqualThenTo(column string, value interface{}) *Condition {
-	slf.buffer.WriteString(OpEscape(column, " <= ", value))
+	slf.buffer.WriteString(opEscape(column, " <= ", value))
 	return slf
 }
 
 //
 
 func (slf *Condition) Like(column string, pattern string) *Condition {
-	slf.buffer.WriteString(OpEscape(column, " LIKE ", pattern))
+	slf.buffer.WriteString(opEscape(column, " LIKE ", pattern))
 	return slf
 }
 

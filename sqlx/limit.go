@@ -39,7 +39,7 @@ func (slf *LimitBuilder) MakeSQL() string {
 }
 
 func (slf *LimitBuilder) Execute(db *sql.DB) *Executor {
-	return newExecute(slf.SQL(), db)
+	return newExecute(slf.MakeSQL(), db)
 }
 
 func (slf *LimitBuilder) OrderBy(columns ...string) *OrderByBuilder {

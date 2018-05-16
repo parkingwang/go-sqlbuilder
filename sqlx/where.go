@@ -37,7 +37,7 @@ func (slf *WhereBuilder) GroupBy(columns ...string) *GroupByBuilder {
 }
 
 func (slf *WhereBuilder) Execute(db *sql.DB) *Executor {
-	return newExecute(slf.SQL(), db)
+	return newExecute(slf.MakeSQL(), db)
 }
 
 //

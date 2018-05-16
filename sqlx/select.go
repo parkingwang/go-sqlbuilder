@@ -76,5 +76,5 @@ func (slf *SelectBuilder) MakeSQL() string {
 }
 
 func (slf *SelectBuilder) Execute(db *sql.DB) *Executor {
-	return newExecute(slf.SQL(), db)
+	return newExecute(slf.MakeSQL(), db)
 }

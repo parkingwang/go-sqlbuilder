@@ -62,5 +62,5 @@ func (slf *OrderByBuilder) MakeSQL() string {
 }
 
 func (slf *OrderByBuilder) Execute(db *sql.DB) *Executor {
-	return newExecute(slf.SQL(), db)
+	return newExecute(slf.MakeSQL(), db)
 }

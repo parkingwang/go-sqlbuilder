@@ -33,7 +33,7 @@ func (slf *GroupByBuilder) MakeSQL() string {
 }
 
 func (slf *GroupByBuilder) Execute(db *sql.DB) *Executor {
-	return newExecute(slf.SQL(), db)
+	return newExecute(slf.MakeSQL(), db)
 }
 
 func (slf *GroupByBuilder) Limit(limit int) *LimitBuilder {

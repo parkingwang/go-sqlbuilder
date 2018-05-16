@@ -1,7 +1,6 @@
 package sqlx
 
 import (
-	"bytes"
 	"database/sql"
 )
 
@@ -18,9 +17,4 @@ type MakeSQL interface {
 
 type Execute interface {
 	Execute(db *sql.DB) *Executor
-}
-
-func makeSQL(buffer *bytes.Buffer) string {
-	buffer.WriteByte(';')
-	return buffer.String()
 }

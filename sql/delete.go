@@ -30,7 +30,7 @@ func (ub *DeleteBuilder) builder() *bytes.Buffer {
 	}
 	buf := new(bytes.Buffer)
 	buf.WriteString("DELETE FROM ")
-	buf.WriteString(EscapeColumn(ub.table))
+	buf.WriteString(EscapeName(ub.table))
 	return buf
 }
 

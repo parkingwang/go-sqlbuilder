@@ -18,7 +18,7 @@ func TestUpdateShouldPanic(t *testing.T) {
 func TestUpdate(t *testing.T) {
 	sql := Update("db.t_user").
 		Columns("username").
-		ColumnValue("age", 18).
+		ColumnAndValue("age", 18).
 		YesYesYesForceUpdate().
 		SQL()
 	checkSQLMatches(sql, "UPDATE `db.t_user` SET `username`=?,`age`=18;", t)

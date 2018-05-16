@@ -54,9 +54,9 @@ func (ib *InsertBuilder) builder() *bytes.Buffer {
 
 	buf := new(bytes.Buffer)
 	buf.WriteString("INSERT INTO ")
-	buf.WriteString(EscapeColumn(ib.table))
+	buf.WriteString(EscapeName(ib.table))
 	buf.WriteByte('(')
-	buf.WriteString(strings.Join(Map(ib.columns, EscapeColumn), ","))
+	buf.WriteString(strings.Join(Map(ib.columns, EscapeName), ","))
 	buf.WriteByte(')')
 	buf.WriteString(" VALUES ")
 	buf.WriteByte('(')

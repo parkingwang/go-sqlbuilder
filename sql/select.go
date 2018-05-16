@@ -32,9 +32,6 @@ func (sb *SelectBuilder) From(table string) *SelectBuilder {
 }
 
 func (sb *SelectBuilder) buffer() *bytes.Buffer {
-	if "" == sb.table {
-		panic("table not found, you should call 'From(table)' method to set it")
-	}
 	buf := new(bytes.Buffer)
 	buf.WriteString("SELECT ")
 
@@ -45,15 +42,15 @@ func (sb *SelectBuilder) buffer() *bytes.Buffer {
 	if len(sb.columns) == 0 {
 		buf.WriteByte('*')
 	} else {
-		buf.WriteString(strings.Join(Map(sb.columns, EscapeColumn), ","))
+		buf.WriteString(strings.Join(Map(sb.columns, EscapeName), ","))
 	}
 
 	buf.WriteString(" FROM ")
-	buf.WriteString(EscapeColumn(sb.table))
+	buf.WriteString(EscapeName(sb.table))
 	return buf
 }
 
-func (sb *SelectBuilder) OrderBy(columns...string) *OrderBuilder {
+func (sb *SelectBuilder) OrderBy(columns ...string) *OrderBuilder {
 	return newOrderBuilder(sb.buffer(), columns...)
 }
 

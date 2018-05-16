@@ -117,7 +117,7 @@ func (wb *WhereBuilder) op(column string, op string) *WhereBuilder {
 }
 
 func (wb *WhereBuilder) opTo(column string, op string, val interface{}) *WhereBuilder {
-	wb.buffer.WriteString(EscapeColumn(column))
+	wb.buffer.WriteString(EscapeName(column))
 	wb.buffer.WriteString(op)
 	wb.buffer.WriteString(EscapeValue(val))
 	return wb

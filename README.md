@@ -1,11 +1,11 @@
 # Go-SQLBuilder
 
-`Go-SQLBuilder`是一个提供系列灵活的、与SQL语法一致的SQL语句构建工具函数库。
+`Go-SQLBuilder`是一个用于创建SQL语句的工具函数库，提供一系列灵活的、与原生SQL语法一致的链式函数。
 
 ## 目标
 
-`GoSQLBuilder`的目标是提供一个简洁灵活的工具集，可以与SQL语法顺序一致地使用，并生成SQL语句，供database/sql原生数据库操作函数使用。
-最显著的是，生成的SQL语句，最大限度使用占位符号，并使用`sql.DB.Query(args)`和`sql.DB.Exec(args)`来设值避免SQL注入等问题。
+`Go-SQLBuilder`的目标是提供一个简洁易用的函数工具集，它可以与SQL原生语法一致地使用，来用生成SQL语句，提供组`database/sql`包的原生数据库操作函数使用。
+最显著的是，Go-SQLBuilder生成的SQL语句，最大程序上使用占位符号`?`来替代数值位，并建议使用`sql.DB.Query(args)`和`sql.DB.Exec(args)`来设值避免SQL注入等问题。
 
 ## 支持特性
 
@@ -15,7 +15,7 @@
 
 ## Install
 
-> go get -u https://github.com/parkingwang/go-sqlbuilder
+> go get -u github.com/parkingwang/go-sqlbuilder
 
 ## Usage
 

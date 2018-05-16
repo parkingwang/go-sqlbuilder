@@ -31,5 +31,5 @@ func TestDeleteBuilder_Where(t *testing.T) {
 		Equal("username").
 		And().EqualTo("password", "123456").
 		SQL()
-	checkSQLMatches(sql, "DELETE FROM `t_users` WHERE `username`=? AND `password`='123456';", t)
+	checkSQLMatches(sql, "DELETE FROM `t_users` WHERE `username` = ? AND `password` = '123456';", t)
 }

@@ -15,3 +15,7 @@ func checkSQLMatches(sql string, shouldBe string, t *testing.T) {
 		t.Error("Output sql not match")
 	}
 }
+
+func newWhereTest(conditions SQLStatement) *WhereBuilder {
+	return newWhere(nil, conditions)
+}

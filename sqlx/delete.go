@@ -40,23 +40,23 @@ func (slf *DeleteBuilder) YesYesYesForceDelete() *DeleteBuilder {
 	return slf
 }
 
-func (slf *DeleteBuilder) Where(conditions Statement) *WhereBuilder {
-	return newWhereWith(slf.SQL(), conditions)
+func (slf *DeleteBuilder) Where(conditions SQLStatement) *WhereBuilder {
+	return newWhere(slf, conditions)
 }
 
-func (slf *DeleteBuilder) SQL() string {
+func (slf *DeleteBuilder) Statement() string {
 	return slf.build().String()
 }
 
-func (slf *DeleteBuilder) MakeSQL() string {
+func (slf *DeleteBuilder) GetSQL() string {
 	sqlTxt := makeSQL(slf.build())
 	if slf.forceDelete {
 		return sqlTxt
 	} else {
-		panic("Warning for FULL-DELETE, you should call 'YesYesYesForceDelete(bool)' to ensure. SQL: " + sqlTxt)
+		panic("Warning for FULL-DELETE, you should call 'YesYesYesForceDelete(bool)' to ensure. SQLText: " + sqlTxt)
 	}
 }
 
 func (slf *DeleteBuilder) Execute(db *sql.DB) *Executor {
-	return newExecute(slf.MakeSQL(), db)
+	return newExecute(slf.GetSQL(), db)
 }

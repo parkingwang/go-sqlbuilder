@@ -28,7 +28,7 @@ func (slf *Condition) Or() *Condition {
 	return slf
 }
 
-func (slf *Condition) SQL() string {
+func (slf *Condition) Statement() string {
 	return slf.buffer.String()
 }
 

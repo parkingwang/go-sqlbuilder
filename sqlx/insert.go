@@ -65,14 +65,10 @@ func (slf *InsertBuilder) build() *bytes.Buffer {
 	return buf
 }
 
-func (slf *InsertBuilder) SQL() string {
-	return slf.build().String()
-}
-
-func (slf *InsertBuilder) MakeSQL() string {
+func (slf *InsertBuilder) GetSQL() string {
 	return makeSQL(slf.build())
 }
 
 func (slf *InsertBuilder) Execute(db *sql.DB) *Executor {
-	return newExecute(slf.MakeSQL(), db)
+	return newExecute(slf.GetSQL(), db)
 }

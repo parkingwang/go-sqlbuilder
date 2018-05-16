@@ -50,30 +50,30 @@ func (slf *SelectBuilder) build() *bytes.Buffer {
 	return buf
 }
 
-func (slf *SelectBuilder) Where(conditions Statement) *WhereBuilder {
-	return newWhereWith(slf.SQL(), conditions)
+func (slf *SelectBuilder) Where(conditions SQLStatement) *WhereBuilder {
+	return newWhere(slf, conditions)
 }
 
 func (slf *SelectBuilder) Limit(limit int) *LimitBuilder {
-	return newLimit(slf.SQL(), limit)
+	return newLimit(slf, limit)
 }
 
 func (slf *SelectBuilder) OrderBy(columns ...string) *OrderByBuilder {
-	return newOrderByBuilder(slf.SQL(), columns...)
+	return newOrderBy(slf, columns...)
 }
 
 func (slf *SelectBuilder) GroupBy(columns ...string) *GroupByBuilder {
-	return newGroupBy(slf.SQL(), columns...)
+	return newGroupBy(slf, columns...)
 }
 
-func (slf *SelectBuilder) SQL() string {
+func (slf *SelectBuilder) Statement() string {
 	return slf.build().String()
 }
 
-func (slf *SelectBuilder) MakeSQL() string {
+func (slf *SelectBuilder) GetSQL() string {
 	return makeSQL(slf.build())
 }
 
 func (slf *SelectBuilder) Execute(db *sql.DB) *Executor {
-	return newExecute(slf.MakeSQL(), db)
+	return newExecute(slf.GetSQL(), db)
 }

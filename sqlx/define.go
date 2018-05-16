@@ -13,12 +13,12 @@ const SQLComma = ", "
 const SQLNameEscape = "`"
 const SQLStringValueEscape = "'"
 
-type Statement interface {
-	SQL() string
+type SQLStatement interface {
+	Statement() string
 }
 
-type MakeSQL interface {
-	MakeSQL() string
+type SQLGenerator interface {
+	GetSQL() string
 }
 
 type Execute interface {

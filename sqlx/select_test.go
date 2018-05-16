@@ -8,14 +8,14 @@ import "testing"
 
 func TestSelectAll(t *testing.T) {
 	sql := Select().From("t_users").
-		MakeSQL()
+		GetSQL()
 	checkSQLMatches(sql, "SELECT * FROM `t_users`;", t)
 }
 
 func TestSelect(t *testing.T) {
 	sql := Select("id", "username").
 		From("t_users").
-		MakeSQL()
+		GetSQL()
 	checkSQLMatches(sql, "SELECT `id`, `username` FROM `t_users`;", t)
 }
 
@@ -24,7 +24,7 @@ func TestSelectWhere(t *testing.T) {
 		From("t_users").
 		Where(Equal("password").
 			Or().EqualTo("password", "*")).
-		MakeSQL()
+		GetSQL()
 	checkSQLMatches(sql, "SELECT `id`, `username` FROM `t_users` WHERE `password` = ? OR `password` = '*';", t)
 }
 
@@ -33,7 +33,7 @@ func TestSelectWhereOrder(t *testing.T) {
 		From("t_users").
 		Where(Equal("password")).
 		OrderBy("id").ASC().
-		MakeSQL()
+		GetSQL()
 	checkSQLMatches(sql, "SELECT `id`, `username` FROM `t_users` WHERE `password` = ? ORDER BY `id` ASC;", t)
 }
 
@@ -42,6 +42,6 @@ func TestSelectWhereLimit(t *testing.T) {
 		From("t_users").
 		Where(Equal("password")).
 		Limit(10).Offset(200).
-		MakeSQL()
+		GetSQL()
 	checkSQLMatches(sql, "SELECT `id`, `username` FROM `t_users` WHERE `password` = ? LIMIT 10 OFFSET 200;", t)
 }

@@ -7,44 +7,44 @@ import "bytes"
 //
 
 type ConditionGroup struct {
-	buffer *bytes.Buffer // 生成语句的缓存
-	cond   Statement     // 由外部指定的，用于使用括号包装起来的条件语句
+	buffer     *bytes.Buffer // 生成语句的缓存
+	conditions SQLStatement  // 由外部指定的，用于使用括号包装起来的条件语句
 }
 
-func Group(cond Statement) *ConditionGroup {
-	return newGroup(cond)
+func Group(conditions SQLStatement) *ConditionGroup {
+	return newGroup(conditions)
 }
 
-func (g *ConditionGroup) Group(cond Statement) *ConditionGroup {
-	g.cond = cond
-	return g
+func (slf *ConditionGroup) Group(conditions SQLStatement) *ConditionGroup {
+	slf.conditions = conditions
+	return slf
 }
 
-func (g *ConditionGroup) And() *ConditionGroup {
-	return newGroupWith(g.SQL(), " AND ")
+func (slf *ConditionGroup) And() *ConditionGroup {
+	return newGroupWith(slf, " AND ")
 }
 
-func (g *ConditionGroup) Or() *ConditionGroup {
-	return newGroupWith(g.SQL(), " OR ")
+func (slf *ConditionGroup) Or() *ConditionGroup {
+	return newGroupWith(slf, " OR ")
 }
 
-func (g *ConditionGroup) SQL() string {
-	g.buffer.WriteString(wrapBrackets(g.cond.SQL()))
-	return g.buffer.String()
+func (slf *ConditionGroup) Statement() string {
+	slf.buffer.WriteString(wrapBrackets(slf.conditions.Statement()))
+	return slf.buffer.String()
 }
 
 //
 
-func newGroup(cond Statement) *ConditionGroup {
+func newGroup(conditions SQLStatement) *ConditionGroup {
 	return &ConditionGroup{
-		buffer: new(bytes.Buffer),
-		cond:   cond,
+		buffer:     new(bytes.Buffer),
+		conditions: conditions,
 	}
 }
 
-func newGroupWith(existsSQL string, op string) *ConditionGroup {
+func newGroupWith(preStatement SQLStatement, op string) *ConditionGroup {
 	group := newGroup(nil)
-	group.buffer.WriteString(existsSQL)
+	group.buffer.WriteString(preStatement.Statement())
 	group.buffer.WriteString(op)
 	return group
 }

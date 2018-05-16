@@ -16,14 +16,14 @@ type OrderByBuilder struct {
 	buffer *bytes.Buffer
 }
 
-func newOrderByBuilder(existsSQL string, columns ...string) *OrderByBuilder {
+func newOrderBy(preStatement SQLStatement, columns ...string) *OrderByBuilder {
 	if len(columns) == 0 {
 		panic("Columns is required for ORDER BY keyword")
 	}
 	ob := &OrderByBuilder{
 		buffer: new(bytes.Buffer),
 	}
-	ob.buffer.WriteString(existsSQL)
+	ob.buffer.WriteString(preStatement.Statement())
 	ob.buffer.WriteString(" ORDER BY ")
 	ob.buffer.WriteString(strings.Join(Map(columns, EscapeName), ","))
 	return ob
@@ -46,21 +46,21 @@ func (slf *OrderByBuilder) DESC() *OrderByBuilder {
 }
 
 func (slf *OrderByBuilder) Limit(limit int) *LimitBuilder {
-	return newLimit(slf.SQL(), limit)
+	return newLimit(slf, limit)
 }
 
 func (slf *OrderByBuilder) GroupBy(columns ...string) *GroupByBuilder {
-	return newGroupBy(slf.SQL(), columns...)
+	return newGroupBy(slf, columns...)
 }
 
-func (slf *OrderByBuilder) SQL() string {
+func (slf *OrderByBuilder) Statement() string {
 	return slf.buffer.String()
 }
 
-func (slf *OrderByBuilder) MakeSQL() string {
+func (slf *OrderByBuilder) GetSQL() string {
 	return makeSQL(slf.buffer)
 }
 
 func (slf *OrderByBuilder) Execute(db *sql.DB) *Executor {
-	return newExecute(slf.MakeSQL(), db)
+	return newExecute(slf.GetSQL(), db)
 }

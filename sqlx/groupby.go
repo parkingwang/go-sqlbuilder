@@ -13,32 +13,32 @@ type GroupByBuilder struct {
 	buffer *bytes.Buffer
 }
 
-func newGroupBy(existsSQL string, columns ...string) *GroupByBuilder {
-	lb := &GroupByBuilder{
+func newGroupBy(preStatement SQLStatement, columns ...string) *GroupByBuilder {
+	gbb := &GroupByBuilder{
 		buffer: new(bytes.Buffer),
 	}
-	lb.buffer.WriteString(existsSQL)
-	lb.buffer.WriteString(" GROUP BY ")
-	lb.buffer.WriteString(joinNames(columns))
-	return lb
+	gbb.buffer.WriteString(preStatement.Statement())
+	gbb.buffer.WriteString(" GROUP BY ")
+	gbb.buffer.WriteString(joinNames(columns))
+	return gbb
 }
 
-func (slf *GroupByBuilder) SQL() string {
+func (slf *GroupByBuilder) Statement() string {
 	return slf.buffer.String()
 }
 
-func (slf *GroupByBuilder) MakeSQL() string {
+func (slf *GroupByBuilder) GetSQL() string {
 	return makeSQL(slf.buffer)
 }
 
 func (slf *GroupByBuilder) Execute(db *sql.DB) *Executor {
-	return newExecute(slf.MakeSQL(), db)
+	return newExecute(slf.GetSQL(), db)
 }
 
 func (slf *GroupByBuilder) Limit(limit int) *LimitBuilder {
-	return newLimit(slf.SQL(), limit)
+	return newLimit(slf, limit)
 }
 
 func (slf *GroupByBuilder) OrderBy(columns ...string) *OrderByBuilder {
-	return newOrderByBuilder(slf.SQL(), columns...)
+	return newOrderBy(slf, columns...)
 }

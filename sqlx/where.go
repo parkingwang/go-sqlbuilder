@@ -11,49 +11,45 @@ import (
 
 type WhereBuilder struct {
 	buffer     *bytes.Buffer
-	conditions Statement
+	conditions SQLStatement
 }
 
-func (slf *WhereBuilder) SQL() string {
-	slf.buffer.WriteString(slf.conditions.SQL())
+func (slf *WhereBuilder) Statement() string {
+	slf.buffer.WriteString(slf.conditions.Statement())
 	return slf.buffer.String()
 }
 
-func (slf *WhereBuilder) MakeSQL() string {
-	slf.buffer.WriteString(slf.conditions.SQL())
+func (slf *WhereBuilder) GetSQL() string {
+	slf.buffer.WriteString(slf.conditions.Statement())
 	return makeSQL(slf.buffer)
 }
 
 func (slf *WhereBuilder) Limit(limit int) *LimitBuilder {
-	return newLimit(slf.SQL(), limit)
+	return newLimit(slf, limit)
 }
 
 func (slf *WhereBuilder) OrderBy(columns ...string) *OrderByBuilder {
-	return newOrderByBuilder(slf.SQL(), columns...)
+	return newOrderBy(slf, columns...)
 }
 
 func (slf *WhereBuilder) GroupBy(columns ...string) *GroupByBuilder {
-	return newGroupBy(slf.SQL(), columns...)
+	return newGroupBy(slf, columns...)
 }
 
 func (slf *WhereBuilder) Execute(db *sql.DB) *Executor {
-	return newExecute(slf.MakeSQL(), db)
+	return newExecute(slf.GetSQL(), db)
 }
 
 //
 
-func newWhereWith(existsSQL string, conditions Statement) *WhereBuilder {
+func newWhere(preStatement SQLStatement, conditions SQLStatement) *WhereBuilder {
 	wb := &WhereBuilder{
 		buffer:     new(bytes.Buffer),
 		conditions: conditions,
 	}
-	if len(existsSQL) > 0 {
-		wb.buffer.WriteString(existsSQL)
+	if nil != preStatement {
+		wb.buffer.WriteString(preStatement.Statement())
 	}
 	wb.buffer.WriteString(" WHERE ")
 	return wb
-}
-
-func newWhere(conditions Statement) *WhereBuilder {
-	return newWhereWith("", conditions)
 }

@@ -62,23 +62,23 @@ func (slf *UpdateBuilder) YesYesYesForceUpdate() *UpdateBuilder {
 	return slf
 }
 
-func (slf *UpdateBuilder) Where(conditions Statement) *WhereBuilder {
-	return newWhereWith(slf.SQL(), conditions)
+func (slf *UpdateBuilder) Where(conditions SQLStatement) *WhereBuilder {
+	return newWhere(slf, conditions)
 }
 
-func (slf *UpdateBuilder) SQL() string {
+func (slf *UpdateBuilder) Statement() string {
 	return slf.build().String()
 }
 
-func (slf *UpdateBuilder) MakeSQL() string {
+func (slf *UpdateBuilder) GetSQL() string {
 	sqlTxt := makeSQL(slf.build())
 	if slf.forceUpdate {
 		return sqlTxt
 	} else {
-		panic("Warning for FULL-UPDATE, you should call 'YesYesYesForceUpdate(bool)' to ensure. SQL: " + sqlTxt)
+		panic("Warning for FULL-UPDATE, you should call 'YesYesYesForceUpdate(bool)' to ensure. SQLText: " + sqlTxt)
 	}
 }
 
 func (slf *UpdateBuilder) Execute(db *sql.DB) *Executor {
-	return newExecute(slf.MakeSQL(), db)
+	return newExecute(slf.GetSQL(), db)
 }

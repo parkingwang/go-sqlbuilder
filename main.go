@@ -16,7 +16,7 @@ func main() {
 		Where(sqlx.Group(sqlx.Equal("username").And().EqualTo("password", "123456")).
 			And().
 			Group(sqlx.LessThen("age").Or().In("nick_name", "yoojia", "yoojiachen"))).
-		MakeSQL()
+		GetSQL()
 
 	fmt.Println(sql1)
 
@@ -26,14 +26,14 @@ func main() {
 		Column("password").DESC().
 		Limit(10).
 		Offset(20).
-		MakeSQL()
+		GetSQL()
 
 	fmt.Println(sql2)
 
 	sql3 := sqlx.Insert("t_vehicles").
 		Columns("id", "number", "color").
 		Values(1, "粤BF49883", "GREEN").
-		MakeSQL()
+		GetSQL()
 
 	fmt.Println(sql3)
 }

@@ -7,8 +7,9 @@ import "database/sql"
 //
 
 type Executor struct {
-	sql string
-	db  *sql.DB
+	sql    string
+	db     *sql.DB
+	logger func(sql string, args []interface{})
 }
 
 func newExecute(sql string, db *sql.DB) *Executor {
@@ -18,8 +19,17 @@ func newExecute(sql string, db *sql.DB) *Executor {
 	}
 }
 
-func (eb *Executor) Exec(args ...interface{}) (sql.Result, error) {
-	stmt, pErr := eb.db.Prepare(eb.sql)
+func (slf *Executor) Logger(logger func(string, []interface{})) *Executor {
+	slf.logger = logger
+	return slf
+}
+
+func (slf *Executor) Exec(args ...interface{}) (sql.Result, error) {
+	if nil != slf.logger {
+		slf.logger(slf.sql, args)
+	}
+
+	stmt, pErr := slf.db.Prepare(slf.sql)
 	if nil != pErr {
 		return nil, pErr
 	}
@@ -28,8 +38,12 @@ func (eb *Executor) Exec(args ...interface{}) (sql.Result, error) {
 	return stmt.Exec(args...)
 }
 
-func (eb *Executor) Query(args ...interface{}) (*sql.Rows, error) {
-	stmt, pErr := eb.db.Prepare(eb.sql)
+func (slf *Executor) Query(args ...interface{}) (*sql.Rows, error) {
+	if nil != slf.logger {
+		slf.logger(slf.sql, args)
+	}
+
+	stmt, pErr := slf.db.Prepare(slf.sql)
 	if nil != pErr {
 		return nil, pErr
 	}
@@ -38,8 +52,12 @@ func (eb *Executor) Query(args ...interface{}) (*sql.Rows, error) {
 	return stmt.Query(args...)
 }
 
-func (eb *Executor) Exists(args ...interface{}) (bool, error) {
-	stmt, pErr := eb.db.Prepare(eb.sql)
+func (slf *Executor) Exists(args ...interface{}) (bool, error) {
+	if nil != slf.logger {
+		slf.logger(slf.sql, args)
+	}
+
+	stmt, pErr := slf.db.Prepare(slf.sql)
 	if nil != pErr {
 		return false, pErr
 	}

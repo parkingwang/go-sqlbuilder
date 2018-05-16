@@ -53,7 +53,7 @@ func (slf *DeleteBuilder) MakeSQL() string {
 	if slf.forceDelete {
 		return sqlTxt
 	} else {
-		panic("Warning for FULL-DELETE, you should call 'YesYesYesForceDelete()' to ensure. SQL: " + sqlTxt)
+		panic("Warning for FULL-DELETE, you should call 'YesYesYesForceDelete(bool)' to ensure. SQL: " + sqlTxt)
 	}
 }
 

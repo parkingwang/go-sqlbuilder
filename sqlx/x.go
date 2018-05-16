@@ -3,6 +3,7 @@ package sqlx
 import (
 	"bytes"
 	"fmt"
+	"strings"
 )
 
 //
@@ -13,15 +14,15 @@ func EscapeName(name string) string {
 	if len(name) == 0 {
 		panic("Empty name")
 	}
-	return "`" + name + "`"
+	return SQLNameEscape + name + SQLNameEscape
 }
 
 func EscapeValue(val interface{}) string {
-	if str, ok := val.(string); ok {
-		if "?" == str {
-			return str
+	if strValue, ok := val.(string); ok {
+		if SQLPlaceHolder == strValue {
+			return strValue
 		} else {
-			return "'" + str + "'"
+			return SQLStringValueEscape + strValue + SQLStringValueEscape
 		}
 	} else {
 		return fmt.Sprintf("%v", val)
@@ -42,6 +43,21 @@ func Map(items []string, mapper func(string) string) []string {
 		newItems[i] = mapper(v)
 	}
 	return newItems
+}
+
+func wrapBrackets(name string) string {
+	if len(name) == 0 {
+		panic("Empty name")
+	}
+	return "(" + name + ")"
+}
+
+func joinNames(items []string) string {
+	return strings.Join(Map(items, EscapeName), SQLComma)
+}
+
+func joinValues(values []interface{}) string {
+	return strings.Join(Map0(values, EscapeValue), SQLComma)
 }
 
 func opEscape(name string, op string, value interface{}) string {

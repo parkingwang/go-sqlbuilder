@@ -3,7 +3,6 @@ package sqlx
 import (
 	"bytes"
 	"database/sql"
-	"strings"
 )
 
 //
@@ -32,7 +31,7 @@ func (slf *InsertBuilder) Table(table string) *InsertBuilder {
 func (slf *InsertBuilder) Columns(columns ...string) *InsertBuilder {
 	for _, col := range columns {
 		slf.columns = append(slf.columns, col)
-		slf.values = append(slf.values, "?")
+		slf.values = append(slf.values, SQLPlaceHolder)
 	}
 	return slf
 }
@@ -57,11 +56,11 @@ func (slf *InsertBuilder) build() *bytes.Buffer {
 	buf.WriteString("INSERT INTO ")
 	buf.WriteString(EscapeName(slf.table))
 	buf.WriteByte('(')
-	buf.WriteString(strings.Join(Map(slf.columns, EscapeName), ","))
+	buf.WriteString(joinNames(slf.columns))
 	buf.WriteByte(')')
 	buf.WriteString(" VALUES ")
 	buf.WriteByte('(')
-	buf.WriteString(strings.Join(Map0(slf.values, EscapeValue), ","))
+	buf.WriteString(joinValues(slf.values))
 	buf.WriteByte(')')
 	return buf
 }

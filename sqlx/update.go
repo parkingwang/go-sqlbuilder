@@ -11,14 +11,14 @@ import (
 //
 
 type UpdateBuilder struct {
-	table       string
-	columns     []string
-	forceUpdate bool
+	table        string
+	columnValues []string
+	forceUpdate  bool
 }
 
 func Update(table string) *UpdateBuilder {
 	return (&UpdateBuilder{
-		columns: make([]string, 0),
+		columnValues: make([]string, 0),
 	}).Table(table)
 }
 
@@ -31,20 +31,20 @@ func (slf *UpdateBuilder) Columns(columns ...string) *UpdateBuilder {
 	if len(columns) == 0 {
 		panic("Columns is required for update")
 	}
-	slf.columns = Map(columns, func(column string) string {
+	slf.columnValues = Map(columns, func(column string) string {
 		return EscapeName(column) + "=?"
 	})
 	return slf
 }
 
 func (slf *UpdateBuilder) ColumnAndValue(column string, value interface{}) *UpdateBuilder {
-	slf.columns = append(slf.columns, func() string {
+	slf.columnValues = append(slf.columnValues, func() string {
 		return EscapeName(column) + "=" + EscapeValue(value)
 	}())
 	return slf
 }
 
-func (slf *UpdateBuilder) builder() *bytes.Buffer {
+func (slf *UpdateBuilder) build() *bytes.Buffer {
 	if "" == slf.table {
 		panic("Table name not found, you should call 'Table(table)' method to set it")
 	}
@@ -52,7 +52,8 @@ func (slf *UpdateBuilder) builder() *bytes.Buffer {
 	buf.WriteString("UPDATE ")
 	buf.WriteString(EscapeName(slf.table))
 	buf.WriteString(" SET ")
-	buf.WriteString(strings.Join(slf.columns, ","))
+	// 此处Columns不需要转义处理
+	buf.WriteString(strings.Join(slf.columnValues, SQLComma))
 	return buf
 }
 
@@ -66,15 +67,15 @@ func (slf *UpdateBuilder) Where(conditions Statement) *WhereBuilder {
 }
 
 func (slf *UpdateBuilder) SQL() string {
-	return slf.builder().String()
+	return slf.build().String()
 }
 
 func (slf *UpdateBuilder) MakeSQL() string {
-	sqlTxt := makeSQL(slf.builder())
+	sqlTxt := makeSQL(slf.build())
 	if slf.forceUpdate {
 		return sqlTxt
 	} else {
-		panic("Warning for FULL-UPDATE, you should call 'YesYesYesForceUpdate()' to ensure. SQL: " + sqlTxt)
+		panic("Warning for FULL-UPDATE, you should call 'YesYesYesForceUpdate(bool)' to ensure. SQL: " + sqlTxt)
 	}
 }
 

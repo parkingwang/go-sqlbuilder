@@ -7,6 +7,12 @@ import (
 //
 // Author: 陈永佳 chenyongjia@parkingwang.com, yoojiachen@gmail.com
 //
+
+const SQLPlaceHolder = "?"
+const SQLComma = ", "
+const SQLNameEscape = "`"
+const SQLStringValueEscape = "'"
+
 type Statement interface {
 	SQL() string
 }

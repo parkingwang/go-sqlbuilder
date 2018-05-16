@@ -16,7 +16,7 @@ func TestSelect(t *testing.T) {
 	sql := Select("id", "username").
 		From("t_users").
 		MakeSQL()
-	checkSQLMatches(sql, "SELECT `id`,`username` FROM `t_users`;", t)
+	checkSQLMatches(sql, "SELECT `id`, `username` FROM `t_users`;", t)
 }
 
 func TestSelectWhere(t *testing.T) {
@@ -25,7 +25,7 @@ func TestSelectWhere(t *testing.T) {
 		Where(Equal("password").
 			Or().EqualTo("password", "*")).
 		MakeSQL()
-	checkSQLMatches(sql, "SELECT `id`,`username` FROM `t_users` WHERE `password` = ? OR `password` = '*';", t)
+	checkSQLMatches(sql, "SELECT `id`, `username` FROM `t_users` WHERE `password` = ? OR `password` = '*';", t)
 }
 
 func TestSelectWhereOrder(t *testing.T) {
@@ -34,7 +34,7 @@ func TestSelectWhereOrder(t *testing.T) {
 		Where(Equal("password")).
 		OrderBy("id").ASC().
 		MakeSQL()
-	checkSQLMatches(sql, "SELECT `id`,`username` FROM `t_users` WHERE `password` = ? ORDER BY `id` ASC;", t)
+	checkSQLMatches(sql, "SELECT `id`, `username` FROM `t_users` WHERE `password` = ? ORDER BY `id` ASC;", t)
 }
 
 func TestSelectWhereLimit(t *testing.T) {
@@ -43,5 +43,5 @@ func TestSelectWhereLimit(t *testing.T) {
 		Where(Equal("password")).
 		Limit(10).Offset(200).
 		MakeSQL()
-	checkSQLMatches(sql, "SELECT `id`,`username` FROM `t_users` WHERE `password` = ? LIMIT 10 OFFSET 200;", t)
+	checkSQLMatches(sql, "SELECT `id`, `username` FROM `t_users` WHERE `password` = ? LIMIT 10 OFFSET 200;", t)
 }

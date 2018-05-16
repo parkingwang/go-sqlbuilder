@@ -3,7 +3,6 @@ package sqlx
 import (
 	"bytes"
 	"database/sql"
-	"strings"
 )
 
 //
@@ -43,7 +42,7 @@ func (slf *SelectBuilder) build() *bytes.Buffer {
 	if len(slf.columns) == 0 {
 		buf.WriteByte('*')
 	} else {
-		buf.WriteString(strings.Join(Map(slf.columns, EscapeName), ","))
+		buf.WriteString(joinNames(slf.columns))
 	}
 
 	buf.WriteString(" FROM ")

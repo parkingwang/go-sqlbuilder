@@ -29,9 +29,7 @@ func (g *ConditionGroup) Or() *ConditionGroup {
 }
 
 func (g *ConditionGroup) SQL() string {
-	// 写入本组SQL到缓存
-	// 如果预存有SQL，则自动拼接
-	g.buffer.WriteString("(" + g.cond.SQL() + ")")
+	g.buffer.WriteString(wrapBrackets(g.cond.SQL()))
 	return g.buffer.String()
 }
 

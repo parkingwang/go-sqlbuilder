@@ -21,7 +21,7 @@ func TestUpdate(t *testing.T) {
 		ColumnAndValue("age", 18).
 		YesYesYesForceUpdate().
 		SQL()
-	checkSQLMatches(sql, "UPDATE `db.t_user` SET `username`=?,`age`=18", t)
+	checkSQLMatches(sql, "UPDATE `db.t_user` SET `username`=?, `age`=18", t)
 }
 
 func TestUpdateBuilder_Where(t *testing.T) {

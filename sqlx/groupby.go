@@ -3,7 +3,6 @@ package sqlx
 import (
 	"bytes"
 	"database/sql"
-	"strings"
 )
 
 //
@@ -20,7 +19,7 @@ func newGroupBy(existsSQL string, columns ...string) *GroupByBuilder {
 	}
 	lb.buffer.WriteString(existsSQL)
 	lb.buffer.WriteString(" GROUP BY ")
-	lb.buffer.WriteString(strings.Join(Map(columns, EscapeName), ", "))
+	lb.buffer.WriteString(joinNames(columns))
 	return lb
 }
 

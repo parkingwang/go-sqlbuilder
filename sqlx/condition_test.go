@@ -25,5 +25,5 @@ func TestCondition_In(t *testing.T) {
 	sql := newCondition().
 		In("name", "yoojia", "yoojiachen", "yoojiachen@gmail.com").
 		SQL()
-	checkSQLMatches(sql, "`name` IN ('yoojia','yoojiachen','yoojiachen@gmail.com')", t)
+	checkSQLMatches(sql, "`name` IN ('yoojia', 'yoojiachen', 'yoojiachen@gmail.com')", t)
 }

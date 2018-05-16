@@ -2,7 +2,6 @@ package sqlx
 
 import (
 	"bytes"
-	"strings"
 )
 
 //
@@ -40,12 +39,11 @@ func Equal(column string) *Condition {
 }
 
 func (slf *Condition) Equal(column string) *Condition {
-	slf.buffer.WriteString(opEscape(column, " = ", "?"))
-	return slf
+	return slf.EqualTo(column, SQLPlaceHolder)
 }
 
 func EqualTo(column string, value interface{}) *Condition {
-	return newCondition().Equal(column)
+	return newCondition().EqualTo(column, value)
 }
 
 func (slf *Condition) EqualTo(column string, value interface{}) *Condition {
@@ -58,8 +56,7 @@ func NotEqual(column string) *Condition {
 }
 
 func (slf *Condition) NotEqual(column string) *Condition {
-	slf.buffer.WriteString(opEscape(column, " <> ", "?"))
-	return slf
+	return slf.NotEqualTo(column, SQLPlaceHolder)
 }
 
 func NotEqualTo(column string, value interface{}) *Condition {
@@ -76,8 +73,7 @@ func GreaterThen(column string) *Condition {
 }
 
 func (slf *Condition) GreaterThen(column string) *Condition {
-	slf.buffer.WriteString(opEscape(column, " > ", "?"))
-	return slf
+	return slf.GreaterThenTo(column, SQLPlaceHolder)
 }
 
 func GreaterThenTo(column string, value interface{}) *Condition {
@@ -94,8 +90,7 @@ func GreaterEqualThen(column string) *Condition {
 }
 
 func (slf *Condition) GreaterEqualThen(column string) *Condition {
-	slf.buffer.WriteString(opEscape(column, " >= ", "?"))
-	return slf
+	return slf.GreaterEqualThenTo(column, SQLPlaceHolder)
 }
 
 func GreaterEqualThenTo(column string, value interface{}) *Condition {
@@ -112,8 +107,7 @@ func LessThen(column string) *Condition {
 }
 
 func (slf *Condition) LessThen(column string) *Condition {
-	slf.buffer.WriteString(opEscape(column, " < ", "?"))
-	return slf
+	return slf.LessEqualThenTo(column, SQLPlaceHolder)
 }
 
 func LessThenTo(column string, value interface{}) *Condition {
@@ -130,8 +124,7 @@ func LessEqualThen(column string) *Condition {
 }
 
 func (slf *Condition) LessEqualThen(column string) *Condition {
-	slf.buffer.WriteString(opEscape(column, " <= ", "?"))
-	return slf
+	return slf.LessEqualThenTo(column, SQLPlaceHolder)
 }
 
 func LessEqualThenTo(column string, value interface{}) *Condition {
@@ -156,6 +149,6 @@ func (slf *Condition) Between(column string, start interface{}, end interface{})
 }
 
 func (slf *Condition) In(column string, items ...interface{}) *Condition {
-	slf.buffer.WriteString(opIgnore(column, " IN ", "("+strings.Join(Map0(items, EscapeValue), ",")+")"))
+	slf.buffer.WriteString(opIgnore(column, " IN ", wrapBrackets(joinValues(items))))
 	return slf
 }

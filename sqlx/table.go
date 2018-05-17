@@ -18,7 +18,8 @@ type columnDefine struct {
 type TableBuilder struct {
 	table         string
 	columns       []columnDefine
-	constraints   []string
+	constraints   []string            // 通用的约束列表
+	uniques       map[string][]string // Unique约束列表，根据名称来合并其Column。默认合并在 “” 组
 	charset       string
 	autoIncrement int
 	ifNotExists   bool
@@ -29,6 +30,7 @@ func CreateTable(table string) *TableBuilder {
 		table:         table,
 		columns:       make([]columnDefine, 0),
 		constraints:   make([]string, 0),
+		uniques:       make(map[string][]string),
 		charset:       "utf8",
 		autoIncrement: 0,
 		ifNotExists:   true,
@@ -66,14 +68,32 @@ func (slf *TableBuilder) addColumn(name string, defines string) {
 	})
 }
 
+func (slf *TableBuilder) addUnique(name string, column string) {
+	if exists, ok := slf.uniques[name]; ok {
+		slf.uniques[name] = append(exists, column)
+	} else {
+		slf.uniques[name] = append(make([]string, 0), column)
+	}
+}
+
 func (slf *TableBuilder) addConstraint(constraint string) {
 	slf.constraints = append(slf.constraints, constraint)
 }
 
 func (slf *TableBuilder) build() *bytes.Buffer {
+	// 数据列
 	columns := make([]string, 0)
 	for _, define := range slf.columns {
 		columns = append(columns, EscapeName(define.name)+define.defines)
+	}
+
+	// 通用约束
+	columns = append(columns, slf.constraints...)
+
+	// Unique约束列
+	for name, colNames := range slf.uniques {
+		constraint := namedConstraint(name) + "UNIQUE (" + strings.Join(colNames, SQLComma) + ")"
+		columns = append(columns, constraint)
 	}
 
 	buf := new(bytes.Buffer)
@@ -83,7 +103,7 @@ func (slf *TableBuilder) build() *bytes.Buffer {
 	}
 	buf.WriteString(EscapeName(slf.table))
 	buf.WriteByte('(')
-	buf.WriteString(strings.Join(append(columns, slf.constraints...), SQLComma))
+	buf.WriteString(strings.Join(columns, SQLComma))
 	buf.WriteByte(')')
 	buf.WriteString(" DEFAULT CHARSET=")
 	buf.WriteString(slf.charset)
@@ -94,4 +114,12 @@ func (slf *TableBuilder) build() *bytes.Buffer {
 
 func (slf *TableBuilder) GetSQL() string {
 	return makeSQL(slf.build())
+}
+
+func namedConstraint(name string) string {
+	if len(name) > 0 {
+		return "CONSTRAINT " + EscapeName(name) + SQLSpace
+	} else {
+		return ""
+	}
 }

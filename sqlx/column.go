@@ -163,7 +163,11 @@ func (slf *ColumnTypeBuilder) Time() *ColumnTypeBuilder {
 //
 
 func (slf *ColumnTypeBuilder) Unique() *ColumnTypeBuilder {
-	slf.table.addConstraint(fmt.Sprintf("UNIQUE(%s)", EscapeName(slf.name)))
+	return slf.UniqueNamed("")
+}
+
+func (slf *ColumnTypeBuilder) UniqueNamed(name string) *ColumnTypeBuilder {
+	slf.table.addUnique(name, EscapeName(slf.name))
 	return slf
 }
 
@@ -172,10 +176,14 @@ func (slf *ColumnTypeBuilder) PrimaryKey() *ColumnTypeBuilder {
 	return slf
 }
 
-func (slf *ColumnTypeBuilder) ForeignKey(refTableName string, refColumnName string) *ColumnTypeBuilder {
-	slf.table.addConstraint(fmt.Sprintf("FOREIGN KEY (%s) REFERENCES %s(%s)",
-		slf.name, EscapeName(refTableName), EscapeName(refColumnName)))
+func (slf *ColumnTypeBuilder) ForeignKeyNamed(fkName string, refTableName string, refColumnName string) *ColumnTypeBuilder {
+	slf.table.addConstraint(fmt.Sprintf("%sFOREIGN KEY (%s) REFERENCES %s(%s)",
+		namedConstraint(fkName), EscapeName(slf.name), EscapeName(refTableName), EscapeName(refColumnName)))
 	return slf
+}
+
+func (slf *ColumnTypeBuilder) ForeignKey(refTableName string, refColumnName string) *ColumnTypeBuilder {
+	return slf.ForeignKeyNamed("", refTableName, refColumnName)
 }
 
 func (slf *ColumnTypeBuilder) NotNull() *ColumnTypeBuilder {
@@ -191,19 +199,23 @@ func (slf *ColumnTypeBuilder) AutoIncrement() *ColumnTypeBuilder {
 //
 
 func (slf *ColumnTypeBuilder) DefaultNow() *ColumnTypeBuilder {
-	return slf.Default("NOW()")
+	slf.addKey("DEFAULT NOW()")
+	return slf
 }
 
 func (slf *ColumnTypeBuilder) Default0() *ColumnTypeBuilder {
-	return slf.Default(0)
+	slf.addKey("DEFAULT 0")
+	return slf
 }
 
 func (slf *ColumnTypeBuilder) DefaultEmptyString() *ColumnTypeBuilder {
-	return slf.Default("''")
+	slf.addKey("DEFAULT ''")
+	return slf
 }
 
 func (slf *ColumnTypeBuilder) DefaultNull() *ColumnTypeBuilder {
-	return slf.Default("NULL")
+	slf.addKey("DEFAULT NULL")
+	return slf
 }
 
 func (slf *ColumnTypeBuilder) Default(value interface{}) *ColumnTypeBuilder {

@@ -70,8 +70,8 @@ INSERT INTO `t_vehicles`(`id`,`number`,`color`) VALUES (1,'粤BF49883','GREEN');
 
 ## License
 
-    Copyright [2018] Xi'an iRain IoT Technology Service CO., Ltd.
-    Copyright [2018] Yoojia Chen chenyongjia@parkingwang, yoojiachen@gmail.com
+    Copyright 2018 西安艾润物联网技术服务有限责任公司
+    Copyright 2018 陈哈哈(chenyongjia@parkingwang, yoojiachen@gmail.com)
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.

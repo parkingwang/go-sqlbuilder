@@ -2,6 +2,7 @@ package sqlx
 
 import (
 	"bytes"
+	"database/sql"
 	"strings"
 )
 
@@ -54,4 +55,8 @@ func (slf *TableBuilder) build() *bytes.Buffer {
 
 func (slf *TableBuilder) GetSQL() string {
 	return makeSQL(slf.build())
+}
+
+func (slf *TableBuilder) Execute(db *sql.DB) *Executor {
+	return newExecute(slf.GetSQL(), db)
 }

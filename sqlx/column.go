@@ -2,6 +2,7 @@ package sqlx
 
 import (
 	"bytes"
+	"database/sql"
 	"fmt"
 )
 
@@ -224,6 +225,10 @@ func (slf *ColumnTypeBuilder) Column(column string) *ColumnTypeBuilder {
 func (slf *ColumnTypeBuilder) GetSQL() string {
 	slf.columnDefineComplete()
 	return slf.table.GetSQL()
+}
+
+func (slf *ColumnTypeBuilder) Execute(db *sql.DB) *Executor {
+	return newExecute(slf.GetSQL(), db)
 }
 
 //

@@ -2,12 +2,25 @@
 
 `Go-SQLBuilder`是一个用于创建SQL语句的工具函数库，提供一系列灵活的、与原生SQL语法一致的链式函数。
 
-## 目标
+## Projects
+
+`Go-SQLBuilder`项目归属于艾润物联公司，项目地址：
+
+开发项目由开发者Fork并持续开发：
+
+- 开发项目：[https://github.com/yoojia/go-sqlbuilder](https://github.com/yoojia/go-sqlbuilder)
+- 开发项目：[https://gitee.com/yoojia/go-sqlbuilder](https://gitee.com/yoojia/go-sqlbuilder)
+
+当版本稳定时，通过PR合并到发布项目：
+- 发布项目：[https://github.com/parkingwang/go-sqlbuilder](https://github.com/parkingwang/go-sqlbuilder)
+- 发布项目：[https://gitee.com/iRainIoT/go-sqlbuilder](https://gitee.com/iRainIoT/go-sqlbuilder)
+
+## Goals
 
 `Go-SQLBuilder`的目标是提供一个简洁易用的函数工具集，它可以与SQL原生语法一致地使用，来用生成SQL语句，提供组`database/sql`包的原生数据库操作函数使用。
 最显著的是，Go-SQLBuilder生成的SQL语句，最大程序上使用占位符号`?`来替代数值位，并建议使用`sql.DB.Query(args)`和`sql.DB.Exec(args)`来设值避免SQL注入等问题。
 
-## 支持特性
+## Features
 
 - 已支持MySQL基本Select/Update/Insert/Delete/Where等语法；
 - 目前只支持MySQL语法；
@@ -70,8 +83,8 @@ INSERT INTO `t_vehicles`(`id`,`number`,`color`) VALUES (1,'粤BF49883','GREEN');
 
 ## License
 
-    Copyright [2018] Xi'an iRain IoT Technology Service CO., Ltd.
-    Copyright [2018] Yoojia Chen chenyongjia@parkingwang, yoojiachen@gmail.com
+    Copyright 2018 西安艾润物联网技术服务有限责任公司
+    Copyright 2018 陈哈哈(chenyongjia@parkingwang, yoojiachen@gmail.com)
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.

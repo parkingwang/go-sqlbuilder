@@ -95,7 +95,3 @@ func (slf *TableBuilder) build() *bytes.Buffer {
 func (slf *TableBuilder) GetSQL() string {
 	return makeSQL(slf.build())
 }
-
-func (slf *TableBuilder) Execute(prepare SQLPrepare) *Executor {
-	return newExecute(slf.GetSQL(), prepare)
-}

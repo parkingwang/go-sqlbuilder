@@ -2,7 +2,7 @@ package sqlx
 
 import (
 	"bytes"
-	"fmt"
+	"strconv"
 	"strings"
 )
 
@@ -10,21 +10,24 @@ import (
 // Author: 陈永佳 chenyongjia@parkingwang.com, yoojiachen@gmail.com
 //
 
-////
+type columnDefine struct {
+	name    string
+	defines string
+}
 
 type TableBuilder struct {
 	table         string
-	columns       map[string]string // 类似：{username: VARCHAR(255) NOT NULL}
-	constraints   []string          // 约束列表
-	charset       string            // 表字符编码
-	autoIncrement int               // 自增编号起步值
+	columns       []columnDefine
+	constraints   []string
+	charset       string
+	autoIncrement int
 	ifNotExists   bool
 }
 
 func CreateTable(table string) *TableBuilder {
 	return &TableBuilder{
 		table:         table,
-		columns:       make(map[string]string),
+		columns:       make([]columnDefine, 0),
 		constraints:   make([]string, 0),
 		charset:       "utf8",
 		autoIncrement: 0,
@@ -52,7 +55,15 @@ func (slf *TableBuilder) Column(name string) *ColumnTypeBuilder {
 }
 
 func (slf *TableBuilder) addColumn(name string, defines string) {
-	slf.columns[name] = defines
+	for _, d := range slf.columns {
+		if d.name == name {
+			panic("Duplicated column define, name: " + name)
+		}
+	}
+	slf.columns = append(slf.columns, columnDefine{
+		name:    name,
+		defines: defines,
+	})
 }
 
 func (slf *TableBuilder) addConstraint(constraint string) {
@@ -61,8 +72,8 @@ func (slf *TableBuilder) addConstraint(constraint string) {
 
 func (slf *TableBuilder) build() *bytes.Buffer {
 	columns := make([]string, 0)
-	for name, defines := range slf.columns {
-		columns = append(columns, EscapeName(name)+defines)
+	for _, define := range slf.columns {
+		columns = append(columns, EscapeName(define.name)+define.defines)
 	}
 
 	buf := new(bytes.Buffer)
@@ -77,7 +88,7 @@ func (slf *TableBuilder) build() *bytes.Buffer {
 	buf.WriteString(" DEFAULT CHARSET=")
 	buf.WriteString(slf.charset)
 	buf.WriteString(" AUTO_INCREMENT=")
-	buf.WriteString(fmt.Sprintf("%d", slf.autoIncrement))
+	buf.WriteString(strconv.Itoa(slf.autoIncrement))
 	return buf
 }
 

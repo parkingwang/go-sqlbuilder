@@ -9,9 +9,10 @@ import (
 //
 
 type SelectBuilder struct {
-	columns  []string
-	table    string
-	distinct bool
+	columns    []string
+	table      string
+	fromSelect SQLStatement
+	distinct   bool
 }
 
 func Select(columns ...string) *SelectBuilder {
@@ -30,6 +31,11 @@ func (slf *SelectBuilder) From(table string) *SelectBuilder {
 	return slf
 }
 
+func (slf *SelectBuilder) FromSelect(innerSelect SQLStatement) *SelectBuilder {
+	slf.fromSelect = innerSelect
+	return slf
+}
+
 func (slf *SelectBuilder) build() *bytes.Buffer {
 	buf := new(bytes.Buffer)
 	buf.WriteString("SELECT ")
@@ -45,7 +51,13 @@ func (slf *SelectBuilder) build() *bytes.Buffer {
 	}
 
 	buf.WriteString(" FROM ")
-	buf.WriteString(EscapeName(slf.table))
+	if nil != slf.fromSelect {
+		buf.WriteByte('(')
+		buf.WriteString(slf.fromSelect.Statement())
+		buf.WriteByte(')')
+	} else {
+		buf.WriteString(EscapeName(slf.table))
+	}
 	return buf
 }
 

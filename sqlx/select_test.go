@@ -45,3 +45,12 @@ func TestSelectWhereLimit(t *testing.T) {
 		GetSQL()
 	checkSQLMatches(sql, "SELECT `id`, `username` FROM `t_users` WHERE `password` = ? LIMIT 10 OFFSET 200;", t)
 }
+
+func TestSelectWhereInnerSelect(t *testing.T) {
+	sql := Select("id", "username").
+		FromSelect(Select().From("t_users_bak").Where(NotEqual("name"))).
+		Where(Equal("password")).
+		Limit(10).Offset(200).
+		GetSQL()
+	checkSQLMatches(sql, "SELECT `id`, `username` FROM (SELECT * FROM `t_users_bak` WHERE `name` <> ?) WHERE `password` = ? LIMIT 10 OFFSET 200;", t)
+}

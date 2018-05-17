@@ -18,6 +18,7 @@ type TableBuilder struct {
 	constraints   []string          // 约束列表
 	charset       string            // 表字符编码
 	autoIncrement int               // 自增编号起步值
+	ifNotExists   bool
 }
 
 func CreateTable(table string) *TableBuilder {
@@ -27,11 +28,13 @@ func CreateTable(table string) *TableBuilder {
 		constraints:   make([]string, 0),
 		charset:       "utf8",
 		autoIncrement: 0,
+		ifNotExists:   true,
 	}
 }
 
-func (slf *TableBuilder) Column(name string) *ColumnTypeBuilder {
-	return newColumnType(slf, name)
+func (slf *TableBuilder) IfNotExists(ifIs bool) *TableBuilder {
+	slf.ifNotExists = ifIs
+	return slf
 }
 
 func (slf *TableBuilder) SetCharset(charset string) *TableBuilder {
@@ -42,6 +45,10 @@ func (slf *TableBuilder) SetCharset(charset string) *TableBuilder {
 func (slf *TableBuilder) SetAutoIncrement(increment int) *TableBuilder {
 	slf.autoIncrement = increment
 	return slf
+}
+
+func (slf *TableBuilder) Column(name string) *ColumnTypeBuilder {
+	return newColumnType(slf, name)
 }
 
 func (slf *TableBuilder) addColumn(name string, defines string) {
@@ -60,6 +67,9 @@ func (slf *TableBuilder) build() *bytes.Buffer {
 
 	buf := new(bytes.Buffer)
 	buf.WriteString("CREATE TABLE ")
+	if slf.ifNotExists {
+		buf.WriteString("IF NOT EXISTS ")
+	}
 	buf.WriteString(EscapeName(slf.table))
 	buf.WriteByte('(')
 	buf.WriteString(strings.Join(append(columns, slf.constraints...), SQLComma))

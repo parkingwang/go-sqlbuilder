@@ -36,7 +36,7 @@
 
 ```go
 
-sql1 := sqlx.Select().
+sql1 := gsb.Select().
     From("t_users").
     OrderBy("username").ASC().
     Column("password").DESC().
@@ -55,17 +55,17 @@ Output:
 
 ```go
 
-sql1 := sqlx.Select("id", "username", "password").
+sql1 := gsb.Select("id", "username", "password").
     Distinct().
     From("t_users").
-    Where(sqlx.Group(sqlx.Equal("username").And().EqualTo("password", "123456")).
+    Where(gsb.Group(gsb.Equal("username").And().EqualTo("password", "123456")).
         And().
-        Group(sqlx.LessThen("age").Or().In("nick_name", "yoojia", "yoojiachen"))).
+        Group(gsb.LessThen("age").Or().In("nick_name", "yoojia", "yoojiachen"))).
     GetSQL()
 
 fmt.Println(sql1)
 
-sql2 := sqlx.Insert("t_vehicles").
+sql2 := gsb.Insert("t_vehicles").
     Columns("id", "number", "color").
     Values(1, "粤BF49883", "GREEN").
     GetSQL()
@@ -78,7 +78,7 @@ Output:
 > SELECT DISTINCT `id`,`username`,`password` FROM `t_users`
       WHERE (`username` = ? AND `password` = '123456') AND (`age` < ? OR `nick_name` IN ('yoojia','yoojiachen'));
 >
->  INSERT INTO `t_vehicles`(`id`, `number`, `color`) VALUES (1, '粤BF49883', 'GREEN');
+> INSERT INTO `t_vehicles`(`id`, `number`, `color`) VALUES (1, '粤BF49883', 'GREEN');
 
 ### Inner Select
 

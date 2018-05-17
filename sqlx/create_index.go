@@ -9,31 +9,31 @@ import (
 // Author: 陈永佳 chenyongjia@parkingwang.com, yoojiachen@gmail.com
 //
 
-type IndexBuilder struct {
+type CreateIndexBuilder struct {
 	table   string
 	name    string
 	columns []string
 	unique  bool
 }
 
-func CreateIndex(indexName string) *IndexBuilder {
-	return &IndexBuilder{
+func CreateIndex(indexName string) *CreateIndexBuilder {
+	return &CreateIndexBuilder{
 		name:    indexName,
 		columns: make([]string, 0),
 	}
 }
 
-func (slf *IndexBuilder) Unique() *IndexBuilder {
+func (slf *CreateIndexBuilder) Unique() *CreateIndexBuilder {
 	slf.unique = true
 	return slf
 }
 
-func (slf *IndexBuilder) OnTable(table string) *IndexBuilder {
+func (slf *CreateIndexBuilder) OnTable(table string) *CreateIndexBuilder {
 	slf.table = table
 	return slf
 }
 
-func (slf *IndexBuilder) Column(name string, desc bool) *IndexBuilder {
+func (slf *CreateIndexBuilder) Column(name string, desc bool) *CreateIndexBuilder {
 	var column string
 	if desc {
 		column = EscapeName(name) + SQLSpace + "DESC"
@@ -44,12 +44,12 @@ func (slf *IndexBuilder) Column(name string, desc bool) *IndexBuilder {
 	return slf
 }
 
-func (slf *IndexBuilder) Columns(columns ...string) *IndexBuilder {
+func (slf *CreateIndexBuilder) Columns(columns ...string) *CreateIndexBuilder {
 	slf.columns = append(slf.columns, Map(columns, EscapeName)...)
 	return slf
 }
 
-func (slf *IndexBuilder) build() *bytes.Buffer {
+func (slf *CreateIndexBuilder) build() *bytes.Buffer {
 	if "" == slf.table {
 		panic("table not found, you should call 'Table(table)' method to set it")
 	}
@@ -70,10 +70,10 @@ func (slf *IndexBuilder) build() *bytes.Buffer {
 	return buf
 }
 
-func (slf *IndexBuilder) GetSQL() string {
+func (slf *CreateIndexBuilder) GetSQL() string {
 	return makeSQL(slf.build())
 }
 
-func (slf *IndexBuilder) Execute(prepare SQLPrepare) *Executor {
+func (slf *CreateIndexBuilder) Execute(prepare SQLPrepare) *Executor {
 	return newExecute(slf.GetSQL(), prepare)
 }

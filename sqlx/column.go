@@ -12,14 +12,14 @@ import (
 type ColumnTypeBuilder struct {
 	table *TableBuilder
 
-	column string
+	name   string
 	buffer *bytes.Buffer
 }
 
-func newColumnType(table *TableBuilder, column string) *ColumnTypeBuilder {
+func newColumnType(table *TableBuilder, name string) *ColumnTypeBuilder {
 	ctb := &ColumnTypeBuilder{
 		table:  table,
-		column: column,
+		name:   name,
 		buffer: new(bytes.Buffer),
 	}
 	return ctb
@@ -163,17 +163,18 @@ func (slf *ColumnTypeBuilder) Time() *ColumnTypeBuilder {
 //
 
 func (slf *ColumnTypeBuilder) Unique() *ColumnTypeBuilder {
-	slf.table.addConstraint(fmt.Sprintf("UNIQUE(%s)", EscapeName(slf.column)))
+	slf.table.addConstraint(fmt.Sprintf("UNIQUE(%s)", EscapeName(slf.name)))
 	return slf
 }
 
 func (slf *ColumnTypeBuilder) PrimaryKey() *ColumnTypeBuilder {
-	slf.table.addConstraint(fmt.Sprintf("PRIMARY KEY(%s)", EscapeName(slf.column)))
+	slf.table.addConstraint(fmt.Sprintf("PRIMARY KEY(%s)", EscapeName(slf.name)))
 	return slf
 }
 
-func (slf *ColumnTypeBuilder) ForeignKey(refTable string, refColumn string) *ColumnTypeBuilder {
-	slf.table.addConstraint(fmt.Sprintf("FOREIGN KEY (%s) REFERENCES %s(%s)", slf.column, EscapeName(refTable), EscapeName(refColumn)))
+func (slf *ColumnTypeBuilder) ForeignKey(refTableName string, refColumnName string) *ColumnTypeBuilder {
+	slf.table.addConstraint(fmt.Sprintf("FOREIGN KEY (%s) REFERENCES %s(%s)",
+		slf.name, EscapeName(refTableName), EscapeName(refColumnName)))
 	return slf
 }
 
@@ -212,9 +213,9 @@ func (slf *ColumnTypeBuilder) Default(value interface{}) *ColumnTypeBuilder {
 
 //
 
-func (slf *ColumnTypeBuilder) Column(column string) *ColumnTypeBuilder {
+func (slf *ColumnTypeBuilder) Column(name string) *ColumnTypeBuilder {
 	slf.columnDefineComplete()
-	return newColumnType(slf.table, column)
+	return newColumnType(slf.table, name)
 }
 
 func (slf *ColumnTypeBuilder) GetSQL() string {
@@ -229,7 +230,7 @@ func (slf *ColumnTypeBuilder) Execute(prepare SQLPrepare) *Executor {
 //
 
 func (slf *ColumnTypeBuilder) columnDefineComplete() {
-	slf.table.addColumn(slf.column, slf.buffer.String())
+	slf.table.addColumn(slf.name, slf.buffer.String())
 }
 
 func (slf *ColumnTypeBuilder) addKeyWithSize(key string, size int) {

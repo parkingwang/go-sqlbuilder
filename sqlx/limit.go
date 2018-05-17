@@ -2,7 +2,6 @@ package sqlx
 
 import (
 	"bytes"
-	"database/sql"
 	"fmt"
 )
 
@@ -38,8 +37,8 @@ func (slf *LimitBuilder) GetSQL() string {
 	return makeSQL(slf.buffer)
 }
 
-func (slf *LimitBuilder) Execute(db *sql.DB) *Executor {
-	return newExecute(slf.GetSQL(), db)
+func (slf *LimitBuilder) Execute(prepare SQLPrepare) *Executor {
+	return newExecute(slf.GetSQL(), prepare)
 }
 
 func (slf *LimitBuilder) OrderBy(columns ...string) *OrderByBuilder {

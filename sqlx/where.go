@@ -2,7 +2,6 @@ package sqlx
 
 import (
 	"bytes"
-	"database/sql"
 )
 
 //
@@ -36,8 +35,8 @@ func (slf *WhereBuilder) GroupBy(columns ...string) *GroupByBuilder {
 	return newGroupBy(slf, columns...)
 }
 
-func (slf *WhereBuilder) Execute(db *sql.DB) *Executor {
-	return newExecute(slf.GetSQL(), db)
+func (slf *WhereBuilder) Execute(prepare SQLPrepare) *Executor {
+	return newExecute(slf.GetSQL(), prepare)
 }
 
 //

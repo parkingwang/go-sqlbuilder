@@ -2,7 +2,6 @@ package sqlx
 
 import (
 	"bytes"
-	"database/sql"
 )
 
 //
@@ -57,6 +56,6 @@ func (slf *DeleteBuilder) GetSQL() string {
 	}
 }
 
-func (slf *DeleteBuilder) Execute(db *sql.DB) *Executor {
-	return newExecute(slf.GetSQL(), db)
+func (slf *DeleteBuilder) Execute(prepare SQLPrepare) *Executor {
+	return newExecute(slf.GetSQL(), prepare)
 }

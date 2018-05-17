@@ -2,7 +2,6 @@ package sqlx
 
 import (
 	"bytes"
-	"database/sql"
 	"strings"
 )
 
@@ -79,6 +78,6 @@ func (slf *UpdateBuilder) GetSQL() string {
 	}
 }
 
-func (slf *UpdateBuilder) Execute(db *sql.DB) *Executor {
-	return newExecute(slf.GetSQL(), db)
+func (slf *UpdateBuilder) Execute(prepare SQLPrepare) *Executor {
+	return newExecute(slf.GetSQL(), prepare)
 }

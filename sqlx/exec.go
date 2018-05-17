@@ -6,16 +6,20 @@ import "database/sql"
 // Author: 陈永佳 chenyongjia@parkingwang.com, yoojiachen@gmail.com
 //
 
-type Executor struct {
-	sql    string
-	db     *sql.DB
-	logger func(sql string, args []interface{})
+type SQLPrepare interface {
+	Prepare(query string) (*sql.Stmt, error)
 }
 
-func newExecute(sql string, db *sql.DB) *Executor {
+type Executor struct {
+	query     string
+	DBPrepare SQLPrepare
+	logger    func(sql string, args []interface{})
+}
+
+func newExecute(query string, prepare SQLPrepare) *Executor {
 	return &Executor{
-		sql: sql,
-		db:  db,
+		query:     query,
+		DBPrepare: prepare,
 	}
 }
 
@@ -26,10 +30,10 @@ func (slf *Executor) Logger(logger func(string, []interface{})) *Executor {
 
 func (slf *Executor) Exec(args ...interface{}) (sql.Result, error) {
 	if nil != slf.logger {
-		slf.logger(slf.sql, args)
+		slf.logger(slf.query, args)
 	}
 
-	stmt, pErr := slf.db.Prepare(slf.sql)
+	stmt, pErr := slf.DBPrepare.Prepare(slf.query)
 	if nil != pErr {
 		return nil, pErr
 	}
@@ -40,10 +44,10 @@ func (slf *Executor) Exec(args ...interface{}) (sql.Result, error) {
 
 func (slf *Executor) Query(args ...interface{}) (*sql.Rows, error) {
 	if nil != slf.logger {
-		slf.logger(slf.sql, args)
+		slf.logger(slf.query, args)
 	}
 
-	stmt, pErr := slf.db.Prepare(slf.sql)
+	stmt, pErr := slf.DBPrepare.Prepare(slf.query)
 	if nil != pErr {
 		return nil, pErr
 	}
@@ -54,10 +58,10 @@ func (slf *Executor) Query(args ...interface{}) (*sql.Rows, error) {
 
 func (slf *Executor) Exists(args ...interface{}) (bool, error) {
 	if nil != slf.logger {
-		slf.logger(slf.sql, args)
+		slf.logger(slf.query, args)
 	}
 
-	stmt, pErr := slf.db.Prepare(slf.sql)
+	stmt, pErr := slf.DBPrepare.Prepare(slf.query)
 	if nil != pErr {
 		return false, pErr
 	}

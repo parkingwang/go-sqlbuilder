@@ -2,7 +2,6 @@ package sqlx
 
 import (
 	"bytes"
-	"database/sql"
 )
 
 //
@@ -31,8 +30,8 @@ func (slf *GroupByBuilder) GetSQL() string {
 	return makeSQL(slf.buffer)
 }
 
-func (slf *GroupByBuilder) Execute(db *sql.DB) *Executor {
-	return newExecute(slf.GetSQL(), db)
+func (slf *GroupByBuilder) Execute(prepare SQLPrepare) *Executor {
+	return newExecute(slf.GetSQL(), prepare)
 }
 
 func (slf *GroupByBuilder) Limit(limit int) *LimitBuilder {

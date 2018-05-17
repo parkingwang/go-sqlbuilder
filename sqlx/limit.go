@@ -2,7 +2,7 @@ package sqlx
 
 import (
 	"bytes"
-	"fmt"
+	"strconv"
 )
 
 //
@@ -19,13 +19,13 @@ func newLimit(preStatement SQLStatement, limit int) *LimitBuilder {
 	}
 	lb.buffer.WriteString(preStatement.Statement())
 	lb.buffer.WriteString(" LIMIT ")
-	lb.buffer.WriteString(fmt.Sprintf("%d", limit))
+	lb.buffer.WriteString(strconv.Itoa(limit))
 	return lb
 }
 
 func (slf *LimitBuilder) Offset(offset int) *LimitBuilder {
 	slf.buffer.WriteString(" OFFSET ")
-	slf.buffer.WriteString(fmt.Sprintf("%d", offset))
+	slf.buffer.WriteString(strconv.Itoa(offset))
 	return slf
 }
 

@@ -14,7 +14,7 @@ func TestCreateTable(t *testing.T) {
 		Column("username").VarChar(255).NotNull().Unique().
 		Column("password").VarChar(255).NotNull().
 		Column("age").Int(2).Default0().
-		Column("register_time").Date().DefaultGetDate().
+		Column("register_time").Date().DefaultNow().
 		GetSQL()
 	checkSQLMatches(sql, "CREATE TABLE IF NOT EXISTS `t_users`(`id` INT(20) NOT NULL AUTO_INCREMENT, "+
 		"`username` VARCHAR(255) NOT NULL, `password` VARCHAR(255) NOT NULL, `age` INT(2) DEFAULT 0, "+

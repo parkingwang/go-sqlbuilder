@@ -189,24 +189,20 @@ func (slf *ColumnTypeBuilder) AutoIncrement() *ColumnTypeBuilder {
 
 //
 
-func (slf *ColumnTypeBuilder) DefaultGetDate() *ColumnTypeBuilder {
-	slf.addKey("DEFAULT GETDATE()")
-	return slf
+func (slf *ColumnTypeBuilder) DefaultNow() *ColumnTypeBuilder {
+	return slf.Default("NOW()")
 }
 
 func (slf *ColumnTypeBuilder) Default0() *ColumnTypeBuilder {
-	slf.addKey("DEFAULT 0")
-	return slf
+	return slf.Default(0)
 }
 
 func (slf *ColumnTypeBuilder) DefaultEmptyString() *ColumnTypeBuilder {
-	slf.addKey("DEFAULT ''")
-	return slf
+	return slf.Default("''")
 }
 
 func (slf *ColumnTypeBuilder) DefaultNull() *ColumnTypeBuilder {
-	slf.addKey("DEFAULT NULL")
-	return slf
+	return slf.Default("NULL")
 }
 
 func (slf *ColumnTypeBuilder) Default(value interface{}) *ColumnTypeBuilder {

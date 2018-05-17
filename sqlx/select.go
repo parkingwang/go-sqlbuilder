@@ -82,7 +82,7 @@ func (slf *SelectBuilder) Statement() string {
 }
 
 func (slf *SelectBuilder) GetSQL() string {
-	return makeSQL(slf.build())
+	return endOfSQL(slf.build())
 }
 
 func (slf *SelectBuilder) Execute(prepare SQLPrepare) *Executor {

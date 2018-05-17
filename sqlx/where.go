@@ -20,7 +20,7 @@ func (slf *WhereBuilder) Statement() string {
 
 func (slf *WhereBuilder) GetSQL() string {
 	slf.buffer.WriteString(slf.conditions.Statement())
-	return makeSQL(slf.buffer)
+	return endOfSQL(slf.buffer)
 }
 
 func (slf *WhereBuilder) Limit(limit int) *LimitBuilder {

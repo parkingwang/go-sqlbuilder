@@ -70,7 +70,7 @@ func (slf *UpdateBuilder) Statement() string {
 }
 
 func (slf *UpdateBuilder) GetSQL() string {
-	sqlTxt := makeSQL(slf.build())
+	sqlTxt := endOfSQL(slf.build())
 	if slf.forceUpdate {
 		return sqlTxt
 	} else {

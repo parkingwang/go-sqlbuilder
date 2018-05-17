@@ -34,7 +34,7 @@ func (slf *LimitBuilder) Statement() string {
 }
 
 func (slf *LimitBuilder) GetSQL() string {
-	return makeSQL(slf.buffer)
+	return endOfSQL(slf.buffer)
 }
 
 func (slf *LimitBuilder) Execute(prepare SQLPrepare) *Executor {

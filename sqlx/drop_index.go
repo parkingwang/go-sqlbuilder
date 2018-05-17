@@ -38,7 +38,7 @@ func (slf *DropIndexBuilder) build() *bytes.Buffer {
 }
 
 func (slf *DropIndexBuilder) GetSQL() string {
-	return makeSQL(slf.build())
+	return endOfSQL(slf.build())
 }
 
 func (slf *DropIndexBuilder) Execute(prepare SQLPrepare) *Executor {

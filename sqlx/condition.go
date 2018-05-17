@@ -47,7 +47,7 @@ func EqualTo(column string, value interface{}) *Condition {
 }
 
 func (slf *Condition) EqualTo(column string, value interface{}) *Condition {
-	slf.buffer.WriteString(opEscape(column, " = ", value))
+	slf.buffer.WriteString(op(column, " = ", value))
 	return slf
 }
 
@@ -64,7 +64,7 @@ func NotEqualTo(column string, value interface{}) *Condition {
 }
 
 func (slf *Condition) NotEqualTo(column string, value interface{}) *Condition {
-	slf.buffer.WriteString(opEscape(column, " <> ", value))
+	slf.buffer.WriteString(op(column, " <> ", value))
 	return slf
 }
 
@@ -81,7 +81,7 @@ func GreaterThenTo(column string, value interface{}) *Condition {
 }
 
 func (slf *Condition) GreaterThenTo(column string, value interface{}) *Condition {
-	slf.buffer.WriteString(opEscape(column, " > ", value))
+	slf.buffer.WriteString(op(column, " > ", value))
 	return slf
 }
 
@@ -98,7 +98,7 @@ func GreaterEqualThenTo(column string, value interface{}) *Condition {
 }
 
 func (slf *Condition) GreaterEqualThenTo(column string, value interface{}) *Condition {
-	slf.buffer.WriteString(opEscape(column, " >= ", value))
+	slf.buffer.WriteString(op(column, " >= ", value))
 	return slf
 }
 
@@ -115,7 +115,7 @@ func LessThenTo(column string, value interface{}) *Condition {
 }
 
 func (slf *Condition) LessThenTo(column string, value interface{}) *Condition {
-	slf.buffer.WriteString(opEscape(column, " < ", value))
+	slf.buffer.WriteString(op(column, " < ", value))
 	return slf
 }
 
@@ -132,23 +132,27 @@ func LessEqualThenTo(column string, value interface{}) *Condition {
 }
 
 func (slf *Condition) LessEqualThenTo(column string, value interface{}) *Condition {
-	slf.buffer.WriteString(opEscape(column, " <= ", value))
+	slf.buffer.WriteString(op(column, " <= ", value))
 	return slf
 }
 
 //
 
 func (slf *Condition) Like(column string, pattern string) *Condition {
-	slf.buffer.WriteString(opEscape(column, " LIKE ", pattern))
+	slf.buffer.WriteString(op(column, " LIKE ", pattern))
 	return slf
 }
 
 func (slf *Condition) Between(column string, start interface{}, end interface{}) *Condition {
-	slf.buffer.WriteString(opIgnore(column, " BETWEEN ", EscapeValue(start)+" AND "+EscapeValue(end)))
+	slf.buffer.WriteString(opv(column, " BETWEEN ", EscapeValue(start)+" AND "+EscapeValue(end)))
 	return slf
 }
 
 func (slf *Condition) In(column string, items ...interface{}) *Condition {
-	slf.buffer.WriteString(opIgnore(column, " IN ", wrapBrackets(joinValues(items))))
+	slf.buffer.WriteString(opv(column, " IN ", brackets(joinValues(items))))
 	return slf
+}
+
+func opv(name string, op string, value string) string {
+	return EscapeName(name) + op + value
 }

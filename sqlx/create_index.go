@@ -71,7 +71,7 @@ func (slf *CreateIndexBuilder) build() *bytes.Buffer {
 }
 
 func (slf *CreateIndexBuilder) GetSQL() string {
-	return makeSQL(slf.build())
+	return endOfSQL(slf.build())
 }
 
 func (slf *CreateIndexBuilder) Execute(prepare SQLPrepare) *Executor {

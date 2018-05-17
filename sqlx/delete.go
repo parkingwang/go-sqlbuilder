@@ -48,7 +48,7 @@ func (slf *DeleteBuilder) Statement() string {
 }
 
 func (slf *DeleteBuilder) GetSQL() string {
-	sqlTxt := makeSQL(slf.build())
+	sqlTxt := endOfSQL(slf.build())
 	if slf.forceDelete {
 		return sqlTxt
 	} else {

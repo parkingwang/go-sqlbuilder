@@ -113,7 +113,7 @@ func (slf *TableBuilder) build() *bytes.Buffer {
 }
 
 func (slf *TableBuilder) GetSQL() string {
-	return makeSQL(slf.build())
+	return endOfSQL(slf.build())
 }
 
 func namedConstraint(name string) string {

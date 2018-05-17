@@ -57,7 +57,7 @@ func (slf *OrderByBuilder) Statement() string {
 }
 
 func (slf *OrderByBuilder) GetSQL() string {
-	return makeSQL(slf.buffer)
+	return endOfSQL(slf.buffer)
 }
 
 func (slf *OrderByBuilder) Execute(prepare SQLPrepare) *Executor {

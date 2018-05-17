@@ -65,7 +65,7 @@ func (slf *InsertBuilder) build() *bytes.Buffer {
 }
 
 func (slf *InsertBuilder) GetSQL() string {
-	return makeSQL(slf.build())
+	return endOfSQL(slf.build())
 }
 
 func (slf *InsertBuilder) Execute(prepare SQLPrepare) *Executor {

@@ -27,7 +27,7 @@ func (slf *GroupByBuilder) Statement() string {
 }
 
 func (slf *GroupByBuilder) GetSQL() string {
-	return makeSQL(slf.buffer)
+	return endOfSQL(slf.buffer)
 }
 
 func (slf *GroupByBuilder) Execute(prepare SQLPrepare) *Executor {

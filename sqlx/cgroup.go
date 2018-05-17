@@ -29,7 +29,7 @@ func (slf *ConditionGroup) Or() *ConditionGroup {
 }
 
 func (slf *ConditionGroup) Statement() string {
-	slf.buffer.WriteString(wrapBrackets(slf.conditions.Statement()))
+	slf.buffer.WriteString(brackets(slf.conditions.Statement()))
 	return slf.buffer.String()
 }
 

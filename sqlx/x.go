@@ -45,7 +45,7 @@ func Map(items []string, mapper func(string) string) []string {
 	return newItems
 }
 
-func wrapBrackets(name string) string {
+func brackets(name string) string {
 	if len(name) == 0 {
 		panic("Empty name")
 	}
@@ -60,15 +60,11 @@ func joinValues(values []interface{}) string {
 	return strings.Join(Map0(values, EscapeValue), SQLComma)
 }
 
-func opEscape(name string, op string, value interface{}) string {
+func op(name string, op string, value interface{}) string {
 	return EscapeName(name) + op + EscapeValue(value)
 }
 
-func opIgnore(name string, op string, value string) string {
-	return EscapeName(name) + op + value
-}
-
-func makeSQL(buffer *bytes.Buffer) string {
+func endOfSQL(buffer *bytes.Buffer) string {
 	buffer.WriteByte(';')
 	return buffer.String()
 }

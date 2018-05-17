@@ -43,7 +43,7 @@ func (slf *UpdateBuilder) ColumnAndValue(column string, value interface{}) *Upda
 	return slf
 }
 
-func (slf *UpdateBuilder) build() *bytes.Buffer {
+func (slf *UpdateBuilder) compile() *bytes.Buffer {
 	if "" == slf.table {
 		panic("Table name not found, you should call 'Table(table)' method to set it")
 	}
@@ -65,12 +65,12 @@ func (slf *UpdateBuilder) Where(conditions SQLStatement) *WhereBuilder {
 	return newWhere(slf, conditions)
 }
 
-func (slf *UpdateBuilder) Statement() string {
-	return slf.build().String()
+func (slf *UpdateBuilder) Compile() string {
+	return slf.compile().String()
 }
 
 func (slf *UpdateBuilder) GetSQL() string {
-	sqlTxt := endOfSQL(slf.build())
+	sqlTxt := endOfSQL(slf.compile())
 	if slf.forceUpdate {
 		return sqlTxt
 	} else {

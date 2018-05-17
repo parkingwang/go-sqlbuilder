@@ -36,7 +36,7 @@ func (slf *SelectBuilder) FromSelect(innerSelect SQLStatement) *SelectBuilder {
 	return slf
 }
 
-func (slf *SelectBuilder) build() *bytes.Buffer {
+func (slf *SelectBuilder) compile() *bytes.Buffer {
 	buf := new(bytes.Buffer)
 	buf.WriteString("SELECT ")
 
@@ -53,7 +53,7 @@ func (slf *SelectBuilder) build() *bytes.Buffer {
 	buf.WriteString(" FROM ")
 	if nil != slf.fromSelect {
 		buf.WriteByte('(')
-		buf.WriteString(slf.fromSelect.Statement())
+		buf.WriteString(slf.fromSelect.Compile())
 		buf.WriteByte(')')
 	} else {
 		buf.WriteString(EscapeName(slf.table))
@@ -77,12 +77,12 @@ func (slf *SelectBuilder) GroupBy(columns ...string) *GroupByBuilder {
 	return newGroupBy(slf, columns...)
 }
 
-func (slf *SelectBuilder) Statement() string {
-	return slf.build().String()
+func (slf *SelectBuilder) Compile() string {
+	return slf.compile().String()
 }
 
 func (slf *SelectBuilder) GetSQL() string {
-	return endOfSQL(slf.build())
+	return endOfSQL(slf.compile())
 }
 
 func (slf *SelectBuilder) Execute(prepare SQLPrepare) *Executor {

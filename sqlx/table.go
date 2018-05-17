@@ -80,7 +80,7 @@ func (slf *TableBuilder) addConstraint(constraint string) {
 	slf.constraints = append(slf.constraints, constraint)
 }
 
-func (slf *TableBuilder) build() *bytes.Buffer {
+func (slf *TableBuilder) compile() *bytes.Buffer {
 	// 数据列
 	columns := make([]string, 0)
 	for _, define := range slf.columns {
@@ -113,7 +113,7 @@ func (slf *TableBuilder) build() *bytes.Buffer {
 }
 
 func (slf *TableBuilder) GetSQL() string {
-	return endOfSQL(slf.build())
+	return endOfSQL(slf.compile())
 }
 
 func namedConstraint(name string) string {

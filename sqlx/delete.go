@@ -24,7 +24,7 @@ func (slf *DeleteBuilder) Table(table string) *DeleteBuilder {
 	return slf
 }
 
-func (slf *DeleteBuilder) build() *bytes.Buffer {
+func (slf *DeleteBuilder) compile() *bytes.Buffer {
 	if "" == slf.table {
 		panic("Table name not found, you should call 'Table(table)' method to set it")
 	}
@@ -43,12 +43,12 @@ func (slf *DeleteBuilder) Where(conditions SQLStatement) *WhereBuilder {
 	return newWhere(slf, conditions)
 }
 
-func (slf *DeleteBuilder) Statement() string {
-	return slf.build().String()
+func (slf *DeleteBuilder) Compile() string {
+	return slf.compile().String()
 }
 
 func (slf *DeleteBuilder) GetSQL() string {
-	sqlTxt := endOfSQL(slf.build())
+	sqlTxt := endOfSQL(slf.compile())
 	if slf.forceDelete {
 		return sqlTxt
 	} else {

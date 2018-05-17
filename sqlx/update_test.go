@@ -20,7 +20,7 @@ func TestUpdate(t *testing.T) {
 		Columns("username").
 		ColumnAndValue("age", 18).
 		YesYesYesForceUpdate().
-		Statement()
+		Compile()
 	checkSQLMatches(sql, "UPDATE `db.t_user` SET `username`=?, `age`=18", t)
 }
 

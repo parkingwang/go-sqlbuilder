@@ -24,7 +24,7 @@ func (slf *DropIndexBuilder) OnTable(table string) *DropIndexBuilder {
 	return slf
 }
 
-func (slf *DropIndexBuilder) build() *bytes.Buffer {
+func (slf *DropIndexBuilder) compile() *bytes.Buffer {
 	if "" == slf.table {
 		panic("table not found, you should call 'OnTable(table)' method to set it")
 	}
@@ -38,7 +38,7 @@ func (slf *DropIndexBuilder) build() *bytes.Buffer {
 }
 
 func (slf *DropIndexBuilder) GetSQL() string {
-	return endOfSQL(slf.build())
+	return endOfSQL(slf.compile())
 }
 
 func (slf *DropIndexBuilder) Execute(prepare SQLPrepare) *Executor {

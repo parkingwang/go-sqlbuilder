@@ -28,7 +28,7 @@ func (slf *Condition) Or() *Condition {
 	return slf
 }
 
-func (slf *Condition) Statement() string {
+func (slf *Condition) Compile() string {
 	return slf.buffer.String()
 }
 

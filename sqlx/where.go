@@ -13,13 +13,13 @@ type WhereBuilder struct {
 	conditions SQLStatement
 }
 
-func (slf *WhereBuilder) Statement() string {
-	slf.buffer.WriteString(slf.conditions.Statement())
+func (slf *WhereBuilder) Compile() string {
+	slf.buffer.WriteString(slf.conditions.Compile())
 	return slf.buffer.String()
 }
 
 func (slf *WhereBuilder) GetSQL() string {
-	slf.buffer.WriteString(slf.conditions.Statement())
+	slf.buffer.WriteString(slf.conditions.Compile())
 	return endOfSQL(slf.buffer)
 }
 
@@ -47,7 +47,7 @@ func newWhere(preStatement SQLStatement, conditions SQLStatement) *WhereBuilder 
 		conditions: conditions,
 	}
 	if nil != preStatement {
-		wb.buffer.WriteString(preStatement.Statement())
+		wb.buffer.WriteString(preStatement.Compile())
 	}
 	wb.buffer.WriteString(" WHERE ")
 	return wb

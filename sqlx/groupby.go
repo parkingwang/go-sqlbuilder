@@ -16,13 +16,13 @@ func newGroupBy(preStatement SQLStatement, columns ...string) *GroupByBuilder {
 	gbb := &GroupByBuilder{
 		buffer: new(bytes.Buffer),
 	}
-	gbb.buffer.WriteString(preStatement.Statement())
+	gbb.buffer.WriteString(preStatement.Compile())
 	gbb.buffer.WriteString(" GROUP BY ")
 	gbb.buffer.WriteString(joinNames(columns))
 	return gbb
 }
 
-func (slf *GroupByBuilder) Statement() string {
+func (slf *GroupByBuilder) Compile() string {
 	return slf.buffer.String()
 }
 

@@ -15,7 +15,7 @@ const SQLNameEscape = "`"
 const SQLStringValueEscape = "'"
 
 type SQLStatement interface {
-	Statement() string
+	Compile() string
 }
 
 type SQLGenerator interface {

@@ -28,8 +28,8 @@ func (slf *ConditionGroup) Or() *ConditionGroup {
 	return newGroupWith(slf, " OR ")
 }
 
-func (slf *ConditionGroup) Statement() string {
-	slf.buffer.WriteString(brackets(slf.conditions.Statement()))
+func (slf *ConditionGroup) Compile() string {
+	slf.buffer.WriteString(brackets(slf.conditions.Compile()))
 	return slf.buffer.String()
 }
 
@@ -44,7 +44,7 @@ func newGroup(conditions SQLStatement) *ConditionGroup {
 
 func newGroupWith(preStatement SQLStatement, op string) *ConditionGroup {
 	group := newGroup(nil)
-	group.buffer.WriteString(preStatement.Statement())
+	group.buffer.WriteString(preStatement.Compile())
 	group.buffer.WriteString(op)
 	return group
 }

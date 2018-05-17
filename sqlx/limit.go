@@ -17,7 +17,7 @@ func newLimit(preStatement SQLStatement, limit int) *LimitBuilder {
 	lb := &LimitBuilder{
 		buffer: new(bytes.Buffer),
 	}
-	lb.buffer.WriteString(preStatement.Statement())
+	lb.buffer.WriteString(preStatement.Compile())
 	lb.buffer.WriteString(" LIMIT ")
 	lb.buffer.WriteString(strconv.Itoa(limit))
 	return lb
@@ -29,7 +29,7 @@ func (slf *LimitBuilder) Offset(offset int) *LimitBuilder {
 	return slf
 }
 
-func (slf *LimitBuilder) Statement() string {
+func (slf *LimitBuilder) Compile() string {
 	return slf.buffer.String()
 }
 

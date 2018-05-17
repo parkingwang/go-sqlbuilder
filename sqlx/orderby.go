@@ -22,7 +22,7 @@ func newOrderBy(preStatement SQLStatement, columns ...string) *OrderByBuilder {
 	ob := &OrderByBuilder{
 		buffer: new(bytes.Buffer),
 	}
-	ob.buffer.WriteString(preStatement.Statement())
+	ob.buffer.WriteString(preStatement.Compile())
 	ob.buffer.WriteString(" ORDER BY ")
 	ob.buffer.WriteString(strings.Join(Map(columns, EscapeName), ","))
 	return ob
@@ -52,7 +52,7 @@ func (slf *OrderByBuilder) GroupBy(columns ...string) *GroupByBuilder {
 	return newGroupBy(slf, columns...)
 }
 
-func (slf *OrderByBuilder) Statement() string {
+func (slf *OrderByBuilder) Compile() string {
 	return slf.buffer.String()
 }
 

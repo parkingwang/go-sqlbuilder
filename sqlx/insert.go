@@ -46,7 +46,7 @@ func (slf *InsertBuilder) Values(values ...interface{}) *InsertBuilder {
 	return slf
 }
 
-func (slf *InsertBuilder) build() *bytes.Buffer {
+func (slf *InsertBuilder) compile() *bytes.Buffer {
 	if "" == slf.table {
 		panic("table not found, you should call 'Table(table)' method to set it")
 	}
@@ -65,7 +65,7 @@ func (slf *InsertBuilder) build() *bytes.Buffer {
 }
 
 func (slf *InsertBuilder) GetSQL() string {
-	return endOfSQL(slf.build())
+	return endOfSQL(slf.compile())
 }
 
 func (slf *InsertBuilder) Execute(prepare SQLPrepare) *Executor {

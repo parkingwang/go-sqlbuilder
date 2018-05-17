@@ -1,4 +1,4 @@
-# Go-SQLBuilder
+# SQL Builder in GoLang
 
 `Go-SQLBuilder`是一个用于创建SQL语句的工具函数库，提供一系列灵活的、与原生SQL语法一致的链式函数。
 
@@ -32,54 +32,69 @@
 
 ## Usage
 
+### Base Usage
+
 ```go
-package main
 
-import (
-	"fmt"
-	"github.com/go-sqlbuilder/sqlx"
-)
+sql1 := sqlx.Select().
+    From("t_users").
+    OrderBy("username").ASC().
+    Column("password").DESC().
+    Limit(10).
+    Offset(20).
+    GetSQL()
 
-func main() {
-	sql1 := sqlx.Select("id", "username", "password").
-		Distinct().
-		From("t_users").
-		Where(sqlx.Group(sqlx.Equal("username").And().EqualTo("password", "123456")).
-			And().
-			Group(sqlx.LessThen("age").Or().In("nick_name", "yoojia", "yoojiachen"))).
-		GetSQL()
-
-	fmt.Println(sql1)
-
-	sql2 := sqlx.Select().
-		From("t_users").
-		OrderBy("username").ASC().
-		Column("password").DESC().
-		Limit(10).
-		Offset(20).
-		GetSQL()
-
-	fmt.Println(sql2)
-
-	sql3 := sqlx.Insert("t_vehicles").
-		Columns("id", "number", "color").
-		Values(1, "粤BF49883", "GREEN").
-		GetSQL()
-
-	fmt.Println(sql3)
-}
+fmt.Println(sql1)
 ```
 
-输出结果如下：
+Output:
 
-```sql
-SELECT DISTINCT `id`,`username`,`password` FROM `t_users`
-    WHERE (`username` = ? AND `password` = '123456') AND (`age` < ? OR `nick_name` IN ('yoojia','yoojiachen'));
+> SELECT * FROM `t_users` ORDER BY `username` ASC, `password` DESC LIMIT 10 OFFSET 20;
 
-SELECT * FROM `t_users` ORDER BY `username` ASC, `password` DESC LIMIT 10 OFFSET 20;
+### Advance Usage
 
-INSERT INTO `t_vehicles`(`id`,`number`,`color`) VALUES (1,'粤BF49883','GREEN');
+```go
+
+sql1 := sqlx.Select("id", "username", "password").
+    Distinct().
+    From("t_users").
+    Where(sqlx.Group(sqlx.Equal("username").And().EqualTo("password", "123456")).
+        And().
+        Group(sqlx.LessThen("age").Or().In("nick_name", "yoojia", "yoojiachen"))).
+    GetSQL()
+
+fmt.Println(sql1)
+
+sql2 := sqlx.Insert("t_vehicles").
+    Columns("id", "number", "color").
+    Values(1, "粤BF49883", "GREEN").
+    GetSQL()
+
+fmt.Println(sql2)
 ```
+
+Output:
+
+> SELECT DISTINCT `id`,`username`,`password` FROM `t_users`
+      WHERE (`username` = ? AND `password` = '123456') AND (`age` < ? OR `nick_name` IN ('yoojia','yoojiachen'));
+>
+>  INSERT INTO `t_vehicles`(`id`, `number`, `color`) VALUES (1, '粤BF49883', 'GREEN');
+
+### Inner Select
+
+```go
+sql := Select("id", "username").
+		FromSelect(Select().From("t_users_bak").Where(NotEqual("name"))).
+		Where(Equal("password")).
+		Limit(10).Offset(200).
+		GetSQL()
+
+fmt.Println(sql)
+```
+
+Output:
+
+> SELECT `id`, `username` FROM (SELECT * FROM `t_users_bak` WHERE `name` <> ?) WHERE `password` = ? LIMIT 10 OFFSET 200;
 
 ## License
 

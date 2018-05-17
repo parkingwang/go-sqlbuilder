@@ -7,8 +7,8 @@ import "bytes"
 //
 
 type ConditionGroup struct {
-	buffer     *bytes.Buffer // 生成语句的缓存
-	conditions SQLStatement  // 由外部指定的，用于使用括号包装起来的条件语句
+	buffer     *bytes.Buffer
+	conditions SQLStatement
 }
 
 func Group(conditions SQLStatement) *ConditionGroup {

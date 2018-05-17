@@ -10,6 +10,7 @@ import (
 
 const SQLPlaceHolder = "?"
 const SQLComma = ", "
+const SQLSpace = " "
 const SQLNameEscape = "`"
 const SQLStringValueEscape = "'"
 

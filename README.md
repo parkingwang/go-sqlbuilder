@@ -49,7 +49,9 @@ fmt.Println(sql1)
 
 Output:
 
-> SELECT * FROM `t_users` ORDER BY `username` ASC, `password` DESC LIMIT 10 OFFSET 20;
+```sql
+SELECT * FROM `t_users` ORDER BY `username` ASC, `password` DESC LIMIT 10 OFFSET 20;
+```
 
 ### Advance Usage
 
@@ -75,10 +77,12 @@ fmt.Println(sql2)
 
 Output:
 
-    SELECT DISTINCT `id`,`username`,`password` FROM `t_users`
-          WHERE (`username` = ? AND `password` = '123456') AND (`age` < ? OR `nick_name` IN ('yoojia','yoojiachen'));
-    
-    INSERT INTO `t_vehicles`(`id`, `number`, `color`) VALUES (1, '粤BF49883', 'GREEN');
+```sql
+SELECT DISTINCT `id`,`username`,`password` FROM `t_users`
+      WHERE (`username` = ? AND `password` = '123456') AND (`age` < ? OR `nick_name` IN ('yoojia','yoojiachen'));
+
+INSERT INTO `t_vehicles`(`id`, `number`, `color`) VALUES (1, '粤BF49883', 'GREEN');
+```
 
 ### Inner Select
 
@@ -93,8 +97,9 @@ fmt.Println(sql)
 ```
 
 Output:
-
-    SELECT `id`, `username` FROM (SELECT * FROM `t_users_bak` WHERE `name` <> ?) WHERE `password` = ? LIMIT 10 OFFSET 200;
+```sql
+SELECT `id`, `username` FROM (SELECT * FROM `t_users_bak` WHERE `name` <> ?) WHERE `password` = ? LIMIT 10 OFFSET 200;
+```
 
 ## License
 

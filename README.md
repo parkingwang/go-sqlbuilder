@@ -29,6 +29,7 @@
 ## Install
 
 > go get -u github.com/parkingwang/go-sqlbuilder
+> go get -u github.com/yoojia/go-sqlbuilder
 
 ## Usage
 

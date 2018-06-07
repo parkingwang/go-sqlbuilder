@@ -1,4 +1,4 @@
-package gsb
+package sqlbuilder
 
 //
 // Author: 陈永佳 chenyongjia@parkingwang.com, yoojiachen@gmail.com

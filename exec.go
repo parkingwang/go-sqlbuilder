@@ -1,4 +1,4 @@
-package gsb
+package sqlbuilder
 
 import (
 	"database/sql"

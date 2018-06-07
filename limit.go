@@ -33,12 +33,12 @@ func (slf *LimitBuilder) Compile() string {
 	return slf.buffer.String()
 }
 
-func (slf *LimitBuilder) GetSQL() string {
+func (slf *LimitBuilder) ToSQL() string {
 	return endOfSQL(slf.buffer)
 }
 
 func (slf *LimitBuilder) Execute(prepare SQLPrepare) *Executor {
-	return newExecute(slf.GetSQL(), prepare)
+	return newExecute(slf.ToSQL(), prepare)
 }
 
 func (slf *LimitBuilder) OrderBy(columns ...string) *OrderByBuilder {

@@ -9,6 +9,6 @@ import "testing"
 func TestDropIndex(t *testing.T) {
 	sql := DropIndex("idx_Uid").
 		OnTable("t_username").
-		GetSQL()
+		ToSQL()
 	checkSQLMatches(sql, "ALTER TABLE `t_username` DROP INDEX `idx_Uid`;", t)
 }

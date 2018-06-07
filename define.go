@@ -19,7 +19,7 @@ type SQLStatement interface {
 }
 
 type SQLGenerator interface {
-	GetSQL() string
+	ToSQL() string
 }
 
 type Execute interface {

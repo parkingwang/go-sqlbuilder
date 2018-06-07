@@ -56,10 +56,10 @@ func (slf *OrderByBuilder) Compile() string {
 	return slf.buffer.String()
 }
 
-func (slf *OrderByBuilder) GetSQL() string {
+func (slf *OrderByBuilder) ToSQL() string {
 	return endOfSQL(slf.buffer)
 }
 
 func (slf *OrderByBuilder) Execute(prepare SQLPrepare) *Executor {
-	return newExecute(slf.GetSQL(), prepare)
+	return newExecute(slf.ToSQL(), prepare)
 }

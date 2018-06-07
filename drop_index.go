@@ -37,10 +37,10 @@ func (slf *DropIndexBuilder) compile() *bytes.Buffer {
 	return buf
 }
 
-func (slf *DropIndexBuilder) GetSQL() string {
+func (slf *DropIndexBuilder) ToSQL() string {
 	return endOfSQL(slf.compile())
 }
 
 func (slf *DropIndexBuilder) Execute(prepare SQLPrepare) *Executor {
-	return newExecute(slf.GetSQL(), prepare)
+	return newExecute(slf.ToSQL(), prepare)
 }

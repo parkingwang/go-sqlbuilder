@@ -81,10 +81,10 @@ func (slf *SelectBuilder) Compile() string {
 	return slf.compile().String()
 }
 
-func (slf *SelectBuilder) GetSQL() string {
+func (slf *SelectBuilder) ToSQL() string {
 	return endOfSQL(slf.compile())
 }
 
 func (slf *SelectBuilder) Execute(prepare SQLPrepare) *Executor {
-	return newExecute(slf.GetSQL(), prepare)
+	return newExecute(slf.ToSQL(), prepare)
 }

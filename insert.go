@@ -12,6 +12,7 @@ type InsertBuilder struct {
 	table   string
 	columns []string
 	values  []interface{}
+	ignore  bool
 }
 
 func Insert(table string) *InsertBuilder {
@@ -20,6 +21,11 @@ func Insert(table string) *InsertBuilder {
 		columns: make([]string, 0),
 		values:  make([]interface{}, 0),
 	}
+}
+
+func (slf *InsertBuilder) Ignore() *InsertBuilder {
+	slf.ignore = true
+	return slf
 }
 
 func (slf *InsertBuilder) Table(table string) *InsertBuilder {
@@ -52,7 +58,11 @@ func (slf *InsertBuilder) compile() *bytes.Buffer {
 	}
 
 	buf := new(bytes.Buffer)
-	buf.WriteString("INSERT INTO ")
+	buf.WriteString("INSERT")
+	if slf.ignore {
+		buf.WriteString(" IGNORE ")
+	}
+	buf.WriteString(" INTO ")
 	buf.WriteString(EscapeName(slf.table))
 	buf.WriteByte('(')
 	buf.WriteString(joinNames(slf.columns))
@@ -64,10 +74,10 @@ func (slf *InsertBuilder) compile() *bytes.Buffer {
 	return buf
 }
 
-func (slf *InsertBuilder) GetSQL() string {
+func (slf *InsertBuilder) ToSQL() string {
 	return endOfSQL(slf.compile())
 }
 
 func (slf *InsertBuilder) Execute(prepare SQLPrepare) *Executor {
-	return newExecute(slf.GetSQL(), prepare)
+	return newExecute(slf.ToSQL(), prepare)
 }

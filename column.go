@@ -201,13 +201,13 @@ func (slf *ColumnTypeBuilder) Column(name string) *ColumnTypeBuilder {
 	return newColumnType(slf.table, name)
 }
 
-func (slf *ColumnTypeBuilder) GetSQL() string {
+func (slf *ColumnTypeBuilder) ToSQL() string {
 	slf.compile()
-	return slf.table.GetSQL()
+	return slf.table.ToSQL()
 }
 
 func (slf *ColumnTypeBuilder) Execute(prepare SQLPrepare) *Executor {
-	return newExecute(slf.GetSQL(), prepare)
+	return newExecute(slf.ToSQL(), prepare)
 }
 
 //

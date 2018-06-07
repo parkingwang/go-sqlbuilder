@@ -18,7 +18,7 @@ func (slf *WhereBuilder) Compile() string {
 	return slf.buffer.String()
 }
 
-func (slf *WhereBuilder) GetSQL() string {
+func (slf *WhereBuilder) ToSQL() string {
 	slf.buffer.WriteString(slf.conditions.Compile())
 	return endOfSQL(slf.buffer)
 }
@@ -36,7 +36,7 @@ func (slf *WhereBuilder) GroupBy(columns ...string) *GroupByBuilder {
 }
 
 func (slf *WhereBuilder) Execute(prepare SQLPrepare) *Executor {
-	return newExecute(slf.GetSQL(), prepare)
+	return newExecute(slf.ToSQL(), prepare)
 }
 
 //

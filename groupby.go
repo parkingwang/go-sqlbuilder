@@ -26,12 +26,12 @@ func (slf *GroupByBuilder) Compile() string {
 	return slf.buffer.String()
 }
 
-func (slf *GroupByBuilder) GetSQL() string {
+func (slf *GroupByBuilder) ToSQL() string {
 	return endOfSQL(slf.buffer)
 }
 
 func (slf *GroupByBuilder) Execute(prepare SQLPrepare) *Executor {
-	return newExecute(slf.GetSQL(), prepare)
+	return newExecute(slf.ToSQL(), prepare)
 }
 
 func (slf *GroupByBuilder) Limit(limit int) *LimitBuilder {

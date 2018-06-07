@@ -42,7 +42,7 @@ sql1 := gsb.Select().
     Column("password").DESC().
     Limit(10).
     Offset(20).
-    GetSQL()
+    ToSQL()
 
 fmt.Println(sql1)
 ```
@@ -63,14 +63,14 @@ sql1 := gsb.Select("id", "username", "password").
     Where(gsb.Group(gsb.Equal("username").And().EqualTo("password", "123456")).
         And().
         Group(gsb.LessThen("age").Or().In("nick_name", "yoojia", "yoojiachen"))).
-    GetSQL()
+    ToSQL()
 
 fmt.Println(sql1)
 
 sql2 := gsb.Insert("t_vehicles").
     Columns("id", "number", "color").
     Values(1, "粤BF49883", "GREEN").
-    GetSQL()
+    ToSQL()
 
 fmt.Println(sql2)
 ```
@@ -91,7 +91,7 @@ sql := Select("id", "username").
 		FromSelect(Select().From("t_users_bak").Where(NotEqual("name"))).
 		Where(Equal("password")).
 		Limit(10).Offset(200).
-		GetSQL()
+		ToSQL()
 
 fmt.Println(sql)
 ```

@@ -12,7 +12,7 @@ func TestCreateIndex(t *testing.T) {
 		OnTable("t_users").
 		Columns("LastName", "FirstName").
 		Column("Age", true).
-		GetSQL()
+		ToSQL()
 
 	checkSQLMatches(sql, "CREATE UNIQUE INDEX `PersonIndex` ON `t_users`(`LastName`, `FirstName`, `Age` DESC);", t)
 }

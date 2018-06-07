@@ -69,7 +69,7 @@ func (slf *UpdateBuilder) Compile() string {
 	return slf.compile().String()
 }
 
-func (slf *UpdateBuilder) GetSQL() string {
+func (slf *UpdateBuilder) ToSQL() string {
 	sqlTxt := endOfSQL(slf.compile())
 	if slf.forceUpdate {
 		return sqlTxt
@@ -79,5 +79,5 @@ func (slf *UpdateBuilder) GetSQL() string {
 }
 
 func (slf *UpdateBuilder) Execute(prepare SQLPrepare) *Executor {
-	return newExecute(slf.GetSQL(), prepare)
+	return newExecute(slf.ToSQL(), prepare)
 }

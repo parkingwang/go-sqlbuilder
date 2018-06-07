@@ -47,7 +47,7 @@ func (slf *DeleteBuilder) Compile() string {
 	return slf.compile().String()
 }
 
-func (slf *DeleteBuilder) GetSQL() string {
+func (slf *DeleteBuilder) ToSQL() string {
 	sqlTxt := endOfSQL(slf.compile())
 	if slf.forceDelete {
 		return sqlTxt
@@ -57,5 +57,5 @@ func (slf *DeleteBuilder) GetSQL() string {
 }
 
 func (slf *DeleteBuilder) Execute(prepare SQLPrepare) *Executor {
-	return newExecute(slf.GetSQL(), prepare)
+	return newExecute(slf.ToSQL(), prepare)
 }

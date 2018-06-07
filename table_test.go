@@ -15,7 +15,7 @@ func TestCreateTable(t *testing.T) {
 		Column("password").VarChar(255).NotNull().
 		Column("age").Int(2).Default0().
 		Column("register_time").Date().DefaultNow().
-		GetSQL()
+		ToSQL()
 	checkSQLMatches(sql, "CREATE TABLE IF NOT EXISTS `t_users`("+
 		"`id` INT(20) NOT NULL AUTO_INCREMENT, "+
 		"`username` VARCHAR(255) NOT NULL, "+
@@ -31,7 +31,7 @@ func TestTableBuilder_ForeignKey(t *testing.T) {
 	sql := CreateTable("t_user").
 		Column("id").Int(12).NotNull().PrimaryKey().AutoIncrement().
 		Column("pid").Int(12).ForeignKey("t_profile", "prof_id").
-		GetSQL()
+		ToSQL()
 	checkSQLMatches(sql, "CREATE TABLE IF NOT EXISTS `t_user`("+
 		"`id` INT(12) NOT NULL AUTO_INCREMENT, "+
 		"`pid` INT(12), PRIMARY KEY(`id`), "+
@@ -43,7 +43,7 @@ func TestTableBuilder_ForeignKeyNamed(t *testing.T) {
 	sql := CreateTable("t_user").
 		Column("id").Int(12).NotNull().PrimaryKey().AutoIncrement().
 		Column("pid").Int(12).ForeignKeyNamed("FK_PID", "t_profile", "prof_id").
-		GetSQL()
+		ToSQL()
 	checkSQLMatches(sql, "CREATE TABLE IF NOT EXISTS `t_user`("+
 		"`id` INT(12) NOT NULL AUTO_INCREMENT, "+
 		"`pid` INT(12), PRIMARY KEY(`id`), "+
@@ -56,7 +56,7 @@ func TestTableBuilder_UniqueNamed(t *testing.T) {
 		Column("id").Int(12).NotNull().PrimaryKey().AutoIncrement().
 		Column("pid").Int(12).UniqueNamed("uc_Id_P").
 		Column("pid_bak").Int(12).UniqueNamed("uc_Id_P").
-		GetSQL()
+		ToSQL()
 	checkSQLMatches(sql, "CREATE TABLE IF NOT EXISTS `t_user`("+
 		"`id` INT(12) NOT NULL AUTO_INCREMENT, "+
 		"`pid` INT(12), "+

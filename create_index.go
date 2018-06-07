@@ -70,10 +70,10 @@ func (slf *CreateIndexBuilder) build() *bytes.Buffer {
 	return buf
 }
 
-func (slf *CreateIndexBuilder) GetSQL() string {
+func (slf *CreateIndexBuilder) ToSQL() string {
 	return endOfSQL(slf.build())
 }
 
 func (slf *CreateIndexBuilder) Execute(prepare SQLPrepare) *Executor {
-	return newExecute(slf.GetSQL(), prepare)
+	return newExecute(slf.ToSQL(), prepare)
 }

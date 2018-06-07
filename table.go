@@ -112,7 +112,7 @@ func (slf *TableBuilder) compile() *bytes.Buffer {
 	return buf
 }
 
-func (slf *TableBuilder) GetSQL() string {
+func (slf *TableBuilder) ToSQL() string {
 	return endOfSQL(slf.compile())
 }
 

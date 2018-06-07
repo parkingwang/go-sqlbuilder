@@ -12,7 +12,7 @@ func TestUpdateShouldPanic(t *testing.T) {
 			t.Errorf("TestUpdateShouldPanic should have panicked!")
 		}
 	}()
-	Update("db.t_user").Columns("username").GetSQL()
+	Update("db.t_user").Columns("username").ToSQL()
 }
 
 func TestUpdate(t *testing.T) {
@@ -29,6 +29,6 @@ func TestUpdateBuilder_Where(t *testing.T) {
 		Columns("username").
 		Where(GreaterEqualThen("age").
 			Or().LessThenTo("height", 50)).
-		GetSQL()
+		ToSQL()
 	checkSQLMatches(sql, "UPDATE `db.t_user` SET `username`=? WHERE `age` >= ? OR `height` < 50;", t)
 }

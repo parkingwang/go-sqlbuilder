@@ -9,12 +9,12 @@ import (
 //
 
 type DeleteBuilder struct {
-	ctx    *SQLBuilder
+	ctx    *SQLContext
 	table  string
 	ensure bool // 删除全表时，需要强制设置一个标记位。
 }
 
-func newDeleteBuilder(ctx *SQLBuilder, table string) *DeleteBuilder {
+func newDeleteBuilder(ctx *SQLContext, table string) *DeleteBuilder {
 	return &DeleteBuilder{
 		ctx:    ctx,
 		table:  table,
@@ -33,7 +33,7 @@ func (slf *DeleteBuilder) compile() *bytes.Buffer {
 	}
 	buf := new(bytes.Buffer)
 	buf.WriteString("DELETE FROM ")
-	buf.WriteString(slf.ctx.EscapeName(slf.table))
+	buf.WriteString(slf.ctx.escapeName(slf.table))
 	return buf
 }
 
@@ -43,7 +43,7 @@ func (slf *DeleteBuilder) YesImSureDeleteTable() *DeleteBuilder {
 }
 
 func (slf *DeleteBuilder) Where(conditions SQLStatement) *WhereBuilder {
-	return newWhere(slf, conditions)
+	return newWhereBuilder(slf.ctx, slf.Compile(), conditions)
 }
 
 func (slf *DeleteBuilder) Compile() string {
@@ -51,7 +51,7 @@ func (slf *DeleteBuilder) Compile() string {
 }
 
 func (slf *DeleteBuilder) ToSQL() string {
-	sqlTxt := endOfSQL(slf.compile())
+	sqlTxt := sqlEndpoint(slf.compile())
 	if slf.ensure {
 		return sqlTxt
 	} else {
@@ -59,6 +59,6 @@ func (slf *DeleteBuilder) ToSQL() string {
 	}
 }
 
-func (slf *DeleteBuilder) Execute(prepare SQLPrepare) *Executor {
-	return newExecute(slf.ToSQL(), prepare)
+func (slf *DeleteBuilder) Execute() *Executor {
+	return newExecute(slf.ToSQL(), slf.ctx.db)
 }

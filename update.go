@@ -10,15 +10,18 @@ import (
 //
 
 type UpdateBuilder struct {
-	table        string
-	columnValues []string
-	forceUpdate  bool
+	ctx             *SQLContext
+	table           string
+	columnAndValues *List
+	ensure          bool
 }
 
-func Update(table string) *UpdateBuilder {
-	return (&UpdateBuilder{
-		columnValues: make([]string, 0),
-	}).Table(table)
+func newUpdateBuilder(ctx *SQLContext, table string) *UpdateBuilder {
+	return &UpdateBuilder{
+		ctx:             ctx,
+		table:           table,
+		columnAndValues: newItems(),
+	}
 }
 
 func (slf *UpdateBuilder) Table(table string) *UpdateBuilder {
@@ -26,20 +29,16 @@ func (slf *UpdateBuilder) Table(table string) *UpdateBuilder {
 	return slf
 }
 
-func (slf *UpdateBuilder) Columns(columns ...string) *UpdateBuilder {
-	if len(columns) == 0 {
-		panic("Columns is required for update")
+func (slf *UpdateBuilder) Columns(column string, otherColumns ...string) *UpdateBuilder {
+	slf.columnAndValues.Add(escapeWith(slf.ctx, column))
+	for _, col := range otherColumns {
+		slf.columnAndValues.Add(escapeWith(slf.ctx, col))
 	}
-	slf.columnValues = Map(columns, func(column string) string {
-		return EscapeName(column) + "=?"
-	})
 	return slf
 }
 
-func (slf *UpdateBuilder) ColumnAndValue(column string, value interface{}) *UpdateBuilder {
-	slf.columnValues = append(slf.columnValues, func() string {
-		return EscapeName(column) + "=" + EscapeValue(value)
-	}())
+func (slf *UpdateBuilder) AddColumnValue(column string, value interface{}) *UpdateBuilder {
+	slf.columnAndValues.Add(slf.ctx.escapeName(column) + "=" + slf.ctx.escapeValue(value))
 	return slf
 }
 
@@ -49,20 +48,20 @@ func (slf *UpdateBuilder) compile() *bytes.Buffer {
 	}
 	buf := new(bytes.Buffer)
 	buf.WriteString("UPDATE ")
-	buf.WriteString(EscapeName(slf.table))
+	buf.WriteString(slf.ctx.escapeName(slf.table))
 	buf.WriteString(" SET ")
 	// 此处Columns不需要转义处理
-	buf.WriteString(strings.Join(slf.columnValues, SQLComma))
+	buf.WriteString(strings.Join(slf.columnAndValues.AvailableStrItems(), SQLComma))
 	return buf
 }
 
-func (slf *UpdateBuilder) YesYesYesForceUpdate() *UpdateBuilder {
-	slf.forceUpdate = true
+func (slf *UpdateBuilder) YesImSureUpdateTable() *UpdateBuilder {
+	slf.ensure = true
 	return slf
 }
 
 func (slf *UpdateBuilder) Where(conditions SQLStatement) *WhereBuilder {
-	return newWhere(slf, conditions)
+	return newWhereBuilder(slf.ctx, slf.Compile(), conditions)
 }
 
 func (slf *UpdateBuilder) Compile() string {
@@ -70,14 +69,18 @@ func (slf *UpdateBuilder) Compile() string {
 }
 
 func (slf *UpdateBuilder) ToSQL() string {
-	sqlTxt := endOfSQL(slf.compile())
-	if slf.forceUpdate {
+	sqlTxt := sqlEndpoint(slf.compile())
+	if slf.ensure {
 		return sqlTxt
 	} else {
-		panic("Warning for FULL-UPDATE, you should call 'YesYesYesForceUpdate(bool)' to ensure. SQLText: " + sqlTxt)
+		panic("Warning for FULL-UPDATE, you should call 'YesImSureUpdateTable(bool)' to ensure. SQLText: " + sqlTxt)
 	}
 }
 
-func (slf *UpdateBuilder) Execute(prepare SQLPrepare) *Executor {
-	return newExecute(slf.ToSQL(), prepare)
+func (slf *UpdateBuilder) Execute() *Executor {
+	return newExecute(slf.ToSQL(), slf.ctx.db)
+}
+
+func escapeWith(ctx *SQLContext, column string) string {
+	return ctx.escapeName(column) + "=?"
 }

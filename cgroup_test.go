@@ -9,19 +9,21 @@ import (
 //
 
 func TestGroup(t *testing.T) {
-	sql := Group(Equal("username").And().NotEqual("age")).
+	ctx := NewContext()
+	sql := Group(ctx.Eq("username").And().NEq("age")).
 		And().
-		Group(Equal("nick_name").Or().NotEqual("height")).
+		Group(ctx.Eq("nick_name").Or().NEq("height")).
 		Compile()
 	checkSQLMatches(sql, "(`username` = ? AND `age` <> ?) AND (`nick_name` = ? OR `height` <> ?)", t)
 }
 
 func TestGroup1(t *testing.T) {
-	sql := Group(Equal("username").And().NotEqual("age")).
+	ctx := NewContext()
+	sql := Group(ctx.Eq("username").And().NEq("age")).
 		And().
-		Group(Equal("nick_name").Or().NotEqual("height")).
+		Group(ctx.Eq("nick_name").Or().NEq("height")).
 		Or().
-		Group(Equal("age").And().Equal("weight")).
+		Group(ctx.Eq("age").And().Eq("weight")).
 		Compile()
 	checkSQLMatches(sql, "(`username` = ? AND `age` <> ?) AND (`nick_name` = ? OR `height` <> ?) OR (`age` = ? AND `weight` = ?)", t)
 }

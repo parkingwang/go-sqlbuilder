@@ -7,7 +7,7 @@ import "testing"
 //
 
 func TestInsertInto(t *testing.T) {
-	sb := New()
+	sb := NewContext()
 	sql := sb.Insert("t_users").
 		Columns("username", "password").
 		SetValueOfColumn("password", 123).
@@ -16,7 +16,7 @@ func TestInsertInto(t *testing.T) {
 }
 
 func TestInsertInto1(t *testing.T) {
-	sb := New()
+	sb := NewContext()
 	sql := sb.Insert("t_users").
 		Columns("username", "password").
 		Values("yoojia", "1234").
@@ -25,7 +25,7 @@ func TestInsertInto1(t *testing.T) {
 }
 
 func TestInsertIntoValued(t *testing.T) {
-	sb := New()
+	sb := NewContext()
 	sql := sb.Insert("t_users").
 		Columns("username", "password").
 		Values("yoojia", "123456").

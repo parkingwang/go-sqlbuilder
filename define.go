@@ -1,16 +1,10 @@
 package gsb
 
-import (
-	"database/sql"
-)
-
 //
 // Author: 陈永佳 chenyongjia@parkingwang.com, yoojiachen@gmail.com
 //
 
 const SQLPlaceHolder = "?"
-const SQLNameEscape = "`"
-const SQLStringValueEscape = "'"
 
 type SQLStatement interface {
 	Compile() string
@@ -20,6 +14,6 @@ type SQLGenerator interface {
 	ToSQL() string
 }
 
-type Execute interface {
-	Execute(db *sql.DB) *Executor
+type Executable interface {
+	Execute() *Executor
 }

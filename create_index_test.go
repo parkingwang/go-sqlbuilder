@@ -7,7 +7,8 @@ import "testing"
 //
 
 func TestCreateIndex(t *testing.T) {
-	sql := CreateIndex("PersonIndex").
+	sbc := NewContext()
+	sql := sbc.CreateIndex("PersonIndex").
 		Unique().
 		OnTable("t_users").
 		Columns("LastName", "FirstName").

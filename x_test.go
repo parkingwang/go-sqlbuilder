@@ -9,13 +9,13 @@ import (
 // Author: 陈永佳 chenyongjia@parkingwang.com, yoojiachen@gmail.com
 //
 
-func checkSQLMatches(sql string, shouldBe string, t *testing.T) {
-	fmt.Println(sql)
-	if sql != shouldBe {
-		t.Error("Output sql not match")
+func checkSQLMatches(actual string, except string, t *testing.T) {
+	fmt.Println("Actual: " + actual)
+	if actual != except {
+		t.Error("Output sql not match, was:  " + except)
 	}
 }
 
-func newWhereTest(conditions SQLStatement) *WhereBuilder {
-	return newWhere(nil, conditions)
+func newWhereTest(ctx *SQLContext, conditions SQLStatement) *WhereBuilder {
+	return newWhereBuilder(ctx, "", conditions)
 }

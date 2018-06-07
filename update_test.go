@@ -12,23 +12,26 @@ func TestUpdateShouldPanic(t *testing.T) {
 			t.Errorf("TestUpdateShouldPanic should have panicked!")
 		}
 	}()
-	Update("db.t_user").Columns("username").ToSQL()
+	sb := NewContext()
+	sb.Update("db.t_user").Columns("username").ToSQL()
 }
 
 func TestUpdate(t *testing.T) {
-	sql := Update("db.t_user").
+	sb := NewContext()
+	sql := sb.Update("db.t_user").
 		Columns("username").
-		ColumnAndValue("age", 18).
-		YesYesYesForceUpdate().
+		AddColumnValue("age", 18).
+		YesImSureUpdateTable().
 		Compile()
 	checkSQLMatches(sql, "UPDATE `db.t_user` SET `username`=?, `age`=18", t)
 }
 
 func TestUpdateBuilder_Where(t *testing.T) {
-	sql := Update("db.t_user").
+	sb := NewContext()
+	sql := sb.Update("db.t_user").
 		Columns("username").
-		Where(GreaterEqualThen("age").
-			Or().LessThenTo("height", 50)).
+		Where(sb.GEt("age").
+			Or().LtTo("height", 50)).
 		ToSQL()
 	checkSQLMatches(sql, "UPDATE `db.t_user` SET `username`=? WHERE `age` >= ? OR `height` < 50;", t)
 }

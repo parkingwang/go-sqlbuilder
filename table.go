@@ -15,7 +15,8 @@ type columnDefine struct {
 	defines string
 }
 
-type TableBuilder struct {
+type CreateTableBuilder struct {
+	ctx           *SQLContext
 	table         string
 	columns       []columnDefine
 	constraints   []string            // 通用的约束列表
@@ -25,8 +26,9 @@ type TableBuilder struct {
 	ifNotExists   bool
 }
 
-func CreateTable(table string) *TableBuilder {
-	return &TableBuilder{
+func newCreateTableBuilder(ctx *SQLContext, table string) *CreateTableBuilder {
+	return &CreateTableBuilder{
+		ctx:           ctx,
 		table:         table,
 		columns:       make([]columnDefine, 0),
 		constraints:   make([]string, 0),
@@ -37,26 +39,26 @@ func CreateTable(table string) *TableBuilder {
 	}
 }
 
-func (slf *TableBuilder) IfNotExists(ifIs bool) *TableBuilder {
+func (slf *CreateTableBuilder) IfNotExists(ifIs bool) *CreateTableBuilder {
 	slf.ifNotExists = ifIs
 	return slf
 }
 
-func (slf *TableBuilder) SetCharset(charset string) *TableBuilder {
+func (slf *CreateTableBuilder) SetCharset(charset string) *CreateTableBuilder {
 	slf.charset = charset
 	return slf
 }
 
-func (slf *TableBuilder) SetAutoIncrement(increment int) *TableBuilder {
+func (slf *CreateTableBuilder) SetAutoIncrement(increment int) *CreateTableBuilder {
 	slf.autoIncrement = increment
 	return slf
 }
 
-func (slf *TableBuilder) Column(name string) *ColumnTypeBuilder {
-	return newColumnType(slf, name)
+func (slf *CreateTableBuilder) Column(name string) *ColumnTypeBuilder {
+	return newColumnType(slf.ctx, slf, name)
 }
 
-func (slf *TableBuilder) addColumn(name string, defines string) {
+func (slf *CreateTableBuilder) addColumn(name string, defines string) {
 	for _, d := range slf.columns {
 		if d.name == name {
 			panic("Duplicated column define, name: " + name)
@@ -68,7 +70,7 @@ func (slf *TableBuilder) addColumn(name string, defines string) {
 	})
 }
 
-func (slf *TableBuilder) addUnique(name string, column string) {
+func (slf *CreateTableBuilder) addUnique(name string, column string) {
 	if exists, ok := slf.uniques[name]; ok {
 		slf.uniques[name] = append(exists, column)
 	} else {
@@ -76,15 +78,15 @@ func (slf *TableBuilder) addUnique(name string, column string) {
 	}
 }
 
-func (slf *TableBuilder) addConstraint(constraint string) {
+func (slf *CreateTableBuilder) addConstraint(constraint string) {
 	slf.constraints = append(slf.constraints, constraint)
 }
 
-func (slf *TableBuilder) compile() *bytes.Buffer {
+func (slf *CreateTableBuilder) compile() *bytes.Buffer {
 	// 数据列
 	columns := make([]string, 0)
 	for _, define := range slf.columns {
-		columns = append(columns, EscapeName(define.name)+define.defines)
+		columns = append(columns, slf.ctx.escapeName(define.name)+define.defines)
 	}
 
 	// 通用约束
@@ -92,7 +94,7 @@ func (slf *TableBuilder) compile() *bytes.Buffer {
 
 	// Unique约束列
 	for name, colNames := range slf.uniques {
-		constraint := namedConstraint(name) + "UNIQUE (" + strings.Join(colNames, SQLComma) + ")"
+		constraint := namedConstraint(slf.ctx, name) + "UNIQUE (" + strings.Join(colNames, SQLComma) + ")"
 		columns = append(columns, constraint)
 	}
 
@@ -101,7 +103,7 @@ func (slf *TableBuilder) compile() *bytes.Buffer {
 	if slf.ifNotExists {
 		buf.WriteString("IF NOT EXISTS ")
 	}
-	buf.WriteString(EscapeName(slf.table))
+	buf.WriteString(slf.ctx.escapeName(slf.table))
 	buf.WriteByte('(')
 	buf.WriteString(strings.Join(columns, SQLComma))
 	buf.WriteByte(')')
@@ -112,13 +114,13 @@ func (slf *TableBuilder) compile() *bytes.Buffer {
 	return buf
 }
 
-func (slf *TableBuilder) ToSQL() string {
-	return endOfSQL(slf.compile())
+func (slf *CreateTableBuilder) ToSQL() string {
+	return sqlEndpoint(slf.compile())
 }
 
-func namedConstraint(name string) string {
+func namedConstraint(ctx *SQLContext, name string) string {
 	if len(name) > 0 {
-		return "CONSTRAINT " + EscapeName(name) + SQLSpace
+		return "CONSTRAINT " + ctx.escapeName(name) + SQLSpace
 	} else {
 		return ""
 	}

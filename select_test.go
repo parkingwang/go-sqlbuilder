@@ -7,49 +7,55 @@ import "testing"
 //
 
 func TestSelectAll(t *testing.T) {
-	sql := Select().From("t_users").
+	sb := NewContext()
+	sql := sb.Select("*").From("t_users").
 		ToSQL()
 	checkSQLMatches(sql, "SELECT * FROM `t_users`;", t)
 }
 
 func TestSelect(t *testing.T) {
-	sql := Select("id", "username").
+	sb := NewContext()
+	sql := sb.Select("id", "username").
 		From("t_users").
 		ToSQL()
 	checkSQLMatches(sql, "SELECT `id`, `username` FROM `t_users`;", t)
 }
 
 func TestSelectWhere(t *testing.T) {
-	sql := Select("id", "username").
+	sb := NewContext()
+	sql := sb.Select("id", "username").
 		From("t_users").
-		Where(Equal("password").
-			Or().EqualTo("password", "*")).
+		Where(sb.Eq("password").
+			Or().EqTo("password", "*")).
 		ToSQL()
 	checkSQLMatches(sql, "SELECT `id`, `username` FROM `t_users` WHERE `password` = ? OR `password` = '*';", t)
 }
 
 func TestSelectWhereOrder(t *testing.T) {
-	sql := Select("id", "username").
+	sb := NewContext()
+	sql := sb.Select("id", "username").
 		From("t_users").
-		Where(Equal("password")).
+		Where(sb.Eq("password")).
 		OrderBy("id").ASC().
 		ToSQL()
 	checkSQLMatches(sql, "SELECT `id`, `username` FROM `t_users` WHERE `password` = ? ORDER BY `id` ASC;", t)
 }
 
 func TestSelectWhereLimit(t *testing.T) {
-	sql := Select("id", "username").
+	sb := NewContext()
+	sql := sb.Select("id", "username").
 		From("t_users").
-		Where(Equal("password")).
+		Where(sb.Eq("password")).
 		Limit(10).Offset(200).
 		ToSQL()
 	checkSQLMatches(sql, "SELECT `id`, `username` FROM `t_users` WHERE `password` = ? LIMIT 10 OFFSET 200;", t)
 }
 
 func TestSelectWhereInnerSelect(t *testing.T) {
-	sql := Select("id", "username").
-		FromSelect(Select().From("t_users_bak").Where(NotEqual("name"))).
-		Where(Equal("password")).
+	sb := NewContext()
+	sql := sb.Select("id", "username").
+		FromSelect(sb.Select("*").From("t_users_bak").Where(sb.NEq("name"))).
+		Where(sb.Eq("password")).
 		Limit(10).Offset(200).
 		ToSQL()
 	checkSQLMatches(sql, "SELECT `id`, `username` FROM (SELECT * FROM `t_users_bak` WHERE `name` <> ?) WHERE `password` = ? LIMIT 10 OFFSET 200;", t)

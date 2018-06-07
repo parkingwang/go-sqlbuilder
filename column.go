@@ -10,14 +10,15 @@ import (
 //
 
 type ColumnTypeBuilder struct {
-	table *TableBuilder
-
+	ctx    *SQLContext
+	table  *CreateTableBuilder
 	name   string
 	buffer *bytes.Buffer
 }
 
-func newColumnType(table *TableBuilder, name string) *ColumnTypeBuilder {
+func newColumnType(ctx *SQLContext, table *CreateTableBuilder, name string) *ColumnTypeBuilder {
 	ctb := &ColumnTypeBuilder{
+		ctx:    ctx,
 		table:  table,
 		name:   name,
 		buffer: new(bytes.Buffer),
@@ -145,18 +146,21 @@ func (slf *ColumnTypeBuilder) Unique() *ColumnTypeBuilder {
 }
 
 func (slf *ColumnTypeBuilder) UniqueNamed(name string) *ColumnTypeBuilder {
-	slf.table.addUnique(name, EscapeName(slf.name))
+	slf.table.addUnique(name, slf.ctx.escapeName(slf.name))
 	return slf
 }
 
 func (slf *ColumnTypeBuilder) PrimaryKey() *ColumnTypeBuilder {
-	slf.table.addConstraint(fmt.Sprintf("PRIMARY KEY(%s)", EscapeName(slf.name)))
+	slf.table.addConstraint(fmt.Sprintf("PRIMARY KEY(%s)", slf.ctx.escapeName(slf.name)))
 	return slf
 }
 
 func (slf *ColumnTypeBuilder) ForeignKeyNamed(fkName string, refTableName string, refColumnName string) *ColumnTypeBuilder {
 	slf.table.addConstraint(fmt.Sprintf("%sFOREIGN KEY (%s) REFERENCES %s(%s)",
-		namedConstraint(fkName), EscapeName(slf.name), EscapeName(refTableName), EscapeName(refColumnName)))
+		namedConstraint(slf.ctx, fkName),
+		slf.ctx.escapeName(slf.name),
+		slf.ctx.escapeName(refTableName),
+		slf.ctx.escapeName(refColumnName)))
 	return slf
 }
 
@@ -191,14 +195,14 @@ func (slf *ColumnTypeBuilder) DefaultNull() *ColumnTypeBuilder {
 }
 
 func (slf *ColumnTypeBuilder) Default(value interface{}) *ColumnTypeBuilder {
-	return slf.key("DEFAULT " + EscapeValue(value))
+	return slf.key("DEFAULT " + slf.ctx.escapeValue(value))
 }
 
 //
 
 func (slf *ColumnTypeBuilder) Column(name string) *ColumnTypeBuilder {
 	slf.compile()
-	return newColumnType(slf.table, name)
+	return newColumnType(slf.ctx, slf.table, name)
 }
 
 func (slf *ColumnTypeBuilder) ToSQL() string {
@@ -206,8 +210,8 @@ func (slf *ColumnTypeBuilder) ToSQL() string {
 	return slf.table.ToSQL()
 }
 
-func (slf *ColumnTypeBuilder) Execute(prepare SQLPrepare) *Executor {
-	return newExecute(slf.ToSQL(), prepare)
+func (slf *ColumnTypeBuilder) Execute() *Executor {
+	return newExecute(slf.ToSQL(), slf.ctx.db)
 }
 
 //

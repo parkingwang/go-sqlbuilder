@@ -8,151 +8,127 @@ import (
 // Author: 陈永佳 chenyongjia@parkingwang.com, yoojiachen@gmail.com
 //
 
-type Condition struct {
+// 条件之间的关联关系
+type ConditionRelation struct {
+	ctx    *SQLContext
 	buffer *bytes.Buffer
 }
 
-func newCondition() *Condition {
-	return &Condition{
+func newConditionBuilder(ctx *SQLContext) *ConditionRelation {
+	return &ConditionRelation{
+		ctx:    ctx,
 		buffer: new(bytes.Buffer),
 	}
 }
 
-func (slf *Condition) And() *Condition {
+// And
+func (slf *ConditionRelation) And() *ConditionRelation {
 	slf.buffer.WriteString(" AND ")
 	return slf
 }
 
-func (slf *Condition) Or() *Condition {
+// Or
+func (slf *ConditionRelation) Or() *ConditionRelation {
 	slf.buffer.WriteString(" OR ")
 	return slf
 }
 
-func (slf *Condition) Compile() string {
+func (slf *ConditionRelation) Compile() string {
 	return slf.buffer.String()
 }
 
 //// Conditions
 
-func Equal(column string) *Condition {
-	return newCondition().Equal(column)
+// 等于
+func (slf *ConditionRelation) Eq(column string) *ConditionRelation {
+	return slf.EqTo(column, slf.ctx.placeHolder)
 }
 
-func (slf *Condition) Equal(column string) *Condition {
-	return slf.EqualTo(column, SQLPlaceHolder)
-}
-
-func EqualTo(column string, value interface{}) *Condition {
-	return newCondition().EqualTo(column, value)
-}
-
-func (slf *Condition) EqualTo(column string, value interface{}) *Condition {
-	slf.buffer.WriteString(op(column, " = ", value))
+// 等于指定值
+func (slf *ConditionRelation) EqTo(column string, value interface{}) *ConditionRelation {
+	slf.buffer.WriteString(slf.op(column, " = ", value))
 	return slf
 }
 
-func NotEqual(column string) *Condition {
-	return newCondition().NotEqual(column)
+// 不等于
+func (slf *ConditionRelation) NEq(column string) *ConditionRelation {
+	return slf.NEqTo(column, slf.ctx.placeHolder)
 }
 
-func (slf *Condition) NotEqual(column string) *Condition {
-	return slf.NotEqualTo(column, SQLPlaceHolder)
-}
-
-func NotEqualTo(column string, value interface{}) *Condition {
-	return newCondition().NotEqualTo(column, value)
-}
-
-func (slf *Condition) NotEqualTo(column string, value interface{}) *Condition {
-	slf.buffer.WriteString(op(column, " <> ", value))
+// 不等于指定值
+func (slf *ConditionRelation) NEqTo(column string, value interface{}) *ConditionRelation {
+	slf.buffer.WriteString(slf.op(column, " <> ", value))
 	return slf
 }
 
-func GreaterThen(column string) *Condition {
-	return newCondition().GreaterThen(column)
+// 大于
+func (slf *ConditionRelation) Gt(column string) *ConditionRelation {
+	return slf.GtTo(column, slf.ctx.placeHolder)
 }
 
-func (slf *Condition) GreaterThen(column string) *Condition {
-	return slf.GreaterThenTo(column, SQLPlaceHolder)
-}
-
-func GreaterThenTo(column string, value interface{}) *Condition {
-	return newCondition().GreaterThenTo(column, value)
-}
-
-func (slf *Condition) GreaterThenTo(column string, value interface{}) *Condition {
-	slf.buffer.WriteString(op(column, " > ", value))
+// 大于指定值
+func (slf *ConditionRelation) GtTo(column string, value interface{}) *ConditionRelation {
+	slf.buffer.WriteString(slf.op(column, " > ", value))
 	return slf
 }
 
-func GreaterEqualThen(column string) *Condition {
-	return newCondition().GreaterEqualThen(column)
+// 大于或等于
+func (slf *ConditionRelation) GEt(column string) *ConditionRelation {
+	return slf.GEtTo(column, slf.ctx.placeHolder)
 }
 
-func (slf *Condition) GreaterEqualThen(column string) *Condition {
-	return slf.GreaterEqualThenTo(column, SQLPlaceHolder)
-}
-
-func GreaterEqualThenTo(column string, value interface{}) *Condition {
-	return newCondition().GreaterEqualThenTo(column, value)
-}
-
-func (slf *Condition) GreaterEqualThenTo(column string, value interface{}) *Condition {
-	slf.buffer.WriteString(op(column, " >= ", value))
+// 大于或等于指定值
+func (slf *ConditionRelation) GEtTo(column string, value interface{}) *ConditionRelation {
+	slf.buffer.WriteString(slf.op(column, " >= ", value))
 	return slf
 }
 
-func LessThen(column string) *Condition {
-	return newCondition().LessThen(column)
+// 小于
+func (slf *ConditionRelation) Lt(column string) *ConditionRelation {
+	return slf.LEtTo(column, slf.ctx.placeHolder)
 }
 
-func (slf *Condition) LessThen(column string) *Condition {
-	return slf.LessEqualThenTo(column, SQLPlaceHolder)
-}
-
-func LessThenTo(column string, value interface{}) *Condition {
-	return newCondition().LessThenTo(column, value)
-}
-
-func (slf *Condition) LessThenTo(column string, value interface{}) *Condition {
-	slf.buffer.WriteString(op(column, " < ", value))
+// 小于指定值
+func (slf *ConditionRelation) LtTo(column string, value interface{}) *ConditionRelation {
+	slf.buffer.WriteString(slf.op(column, " < ", value))
 	return slf
 }
 
-func LessEqualThen(column string) *Condition {
-	return newCondition().LessEqualThen(column)
+// 小于或者等于
+func (slf *ConditionRelation) LEt(column string) *ConditionRelation {
+	return slf.LEtTo(column, slf.ctx.placeHolder)
 }
 
-func (slf *Condition) LessEqualThen(column string) *Condition {
-	return slf.LessEqualThenTo(column, SQLPlaceHolder)
-}
-
-func LessEqualThenTo(column string, value interface{}) *Condition {
-	return newCondition().LessEqualThenTo(column, value)
-}
-
-func (slf *Condition) LessEqualThenTo(column string, value interface{}) *Condition {
-	slf.buffer.WriteString(op(column, " <= ", value))
+// 小于或者等于指定值
+func (slf *ConditionRelation) LEtTo(column string, value interface{}) *ConditionRelation {
+	slf.buffer.WriteString(slf.op(column, " <= ", value))
 	return slf
 }
 
-//
-
-func (slf *Condition) Like(column string, pattern string) *Condition {
-	slf.buffer.WriteString(op(column, " LIKE ", pattern))
+// Like
+func (slf *ConditionRelation) Like(column string, pattern string) *ConditionRelation {
+	slf.buffer.WriteString(slf.op(column, " LIKE ", pattern))
 	return slf
 }
 
-func (slf *Condition) Between(column string, start interface{}, end interface{}) *Condition {
-	slf.buffer.WriteString(opv(column, " BETWEEN ", EscapeValue(start)+" AND "+EscapeValue(end)))
+// Between
+func (slf *ConditionRelation) Between(column string, start interface{}, end interface{}) *ConditionRelation {
+	slf.buffer.WriteString(slf.opv(column, " BETWEEN ", slf.ctx.escapeValue(start)+" AND "+slf.ctx.escapeValue(end)))
 	return slf
 }
 
-func (slf *Condition) In(column string, items ...interface{}) *Condition {
-	slf.buffer.WriteString(opv(column, " IN ", brackets(joinValues(items))))
+// 在指定集合中
+func (slf *ConditionRelation) In(column string, items ...interface{}) *ConditionRelation {
+	slf.buffer.WriteString(slf.opv(column, " IN ", brackets(slf.ctx.joinValues(items))))
 	return slf
 }
 
-func opv(name string, op string, value string) string {
-	return EscapeName(name) + op + value
+////
+
+func (slf *ConditionRelation) opv(name string, op string, value string) string {
+	return slf.ctx.escapeName(name) + op + value
+}
+
+func (slf *ConditionRelation) op(name string, op string, value interface{}) string {
+	return slf.ctx.escapeName(name) + op + slf.ctx.escapeValue(value)
 }

@@ -7,7 +7,8 @@ import "testing"
 //
 
 func TestDropIndex(t *testing.T) {
-	sql := DropIndex("idx_Uid").
+	sbc := NewContext()
+	sql := sbc.DropIndex("idx_Uid").
 		OnTable("t_username").
 		ToSQL()
 	checkSQLMatches(sql, "ALTER TABLE `t_username` DROP INDEX `idx_Uid`;", t)

@@ -9,12 +9,14 @@ import (
 //
 
 type DropIndexBuilder struct {
+	ctx   *SQLContext
 	name  string
 	table string
 }
 
-func DropIndex(indexName string) *DropIndexBuilder {
+func newDropIndexBuilder(ctx *SQLContext, indexName string) *DropIndexBuilder {
 	return &DropIndexBuilder{
+		ctx:  ctx,
 		name: indexName,
 	}
 }
@@ -31,16 +33,16 @@ func (slf *DropIndexBuilder) compile() *bytes.Buffer {
 	//ALTER TABLE table_name DROP INDEX index_name
 	buf := new(bytes.Buffer)
 	buf.WriteString("ALTER TABLE ")
-	buf.WriteString(EscapeName(slf.table))
+	buf.WriteString(slf.ctx.escapeName(slf.table))
 	buf.WriteString(" DROP INDEX ")
-	buf.WriteString(EscapeName(slf.name))
+	buf.WriteString(slf.ctx.escapeName(slf.name))
 	return buf
 }
 
 func (slf *DropIndexBuilder) ToSQL() string {
-	return endOfSQL(slf.compile())
+	return sqlEndpoint(slf.compile())
 }
 
-func (slf *DropIndexBuilder) Execute(prepare SQLPrepare) *Executor {
-	return newExecute(slf.ToSQL(), prepare)
+func (slf *DropIndexBuilder) Execute() *Executor {
+	return newExecute(slf.ToSQL(), slf.ctx.db)
 }

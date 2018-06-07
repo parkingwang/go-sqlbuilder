@@ -9,7 +9,8 @@ import (
 //
 
 func TestCreateTable(t *testing.T) {
-	sql := CreateTable("t_users").
+	sbc := NewContext()
+	sql := sbc.CreateTable("t_users").
 		Column("id").Int(20).NotNull().PrimaryKey().AutoIncrement().
 		Column("username").VarChar(255).NotNull().Unique().
 		Column("password").VarChar(255).NotNull().
@@ -28,7 +29,8 @@ func TestCreateTable(t *testing.T) {
 }
 
 func TestTableBuilder_ForeignKey(t *testing.T) {
-	sql := CreateTable("t_user").
+	sbc := NewContext()
+	sql := sbc.CreateTable("t_user").
 		Column("id").Int(12).NotNull().PrimaryKey().AutoIncrement().
 		Column("pid").Int(12).ForeignKey("t_profile", "prof_id").
 		ToSQL()
@@ -40,7 +42,8 @@ func TestTableBuilder_ForeignKey(t *testing.T) {
 }
 
 func TestTableBuilder_ForeignKeyNamed(t *testing.T) {
-	sql := CreateTable("t_user").
+	sbc := NewContext()
+	sql := sbc.CreateTable("t_user").
 		Column("id").Int(12).NotNull().PrimaryKey().AutoIncrement().
 		Column("pid").Int(12).ForeignKeyNamed("FK_PID", "t_profile", "prof_id").
 		ToSQL()
@@ -52,7 +55,8 @@ func TestTableBuilder_ForeignKeyNamed(t *testing.T) {
 }
 
 func TestTableBuilder_UniqueNamed(t *testing.T) {
-	sql := CreateTable("t_user").
+	sbc := NewContext()
+	sql := sbc.CreateTable("t_user").
 		Column("id").Int(12).NotNull().PrimaryKey().AutoIncrement().
 		Column("pid").Int(12).UniqueNamed("uc_Id_P").
 		Column("pid_bak").Int(12).UniqueNamed("uc_Id_P").

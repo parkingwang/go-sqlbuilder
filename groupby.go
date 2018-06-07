@@ -9,16 +9,18 @@ import (
 //
 
 type GroupByBuilder struct {
+	ctx    *SQLContext
 	buffer *bytes.Buffer
 }
 
-func newGroupBy(preStatement SQLStatement, columns ...string) *GroupByBuilder {
+func newGroupByBuilder(ctx *SQLContext, pre string, columns ...string) *GroupByBuilder {
 	gbb := &GroupByBuilder{
+		ctx:    ctx,
 		buffer: new(bytes.Buffer),
 	}
-	gbb.buffer.WriteString(preStatement.Compile())
+	gbb.buffer.WriteString(pre)
 	gbb.buffer.WriteString(" GROUP BY ")
-	gbb.buffer.WriteString(joinNames(columns))
+	gbb.buffer.WriteString(ctx.joinNames(columns))
 	return gbb
 }
 
@@ -27,17 +29,17 @@ func (slf *GroupByBuilder) Compile() string {
 }
 
 func (slf *GroupByBuilder) ToSQL() string {
-	return endOfSQL(slf.buffer)
-}
-
-func (slf *GroupByBuilder) Execute(prepare SQLPrepare) *Executor {
-	return newExecute(slf.ToSQL(), prepare)
+	return sqlEndpoint(slf.buffer)
 }
 
 func (slf *GroupByBuilder) Limit(limit int) *LimitBuilder {
-	return newLimit(slf, limit)
+	return newLimitBuilder(slf.ctx, slf.Compile(), limit)
 }
 
 func (slf *GroupByBuilder) OrderBy(columns ...string) *OrderByBuilder {
-	return newOrderBy(slf, columns...)
+	return newOrderByBuilder(slf.ctx, slf.Compile(), columns...)
+}
+
+func (slf *GroupByBuilder) Execute() *Executor {
+	return newExecute(slf.ToSQL(), slf.ctx.db)
 }

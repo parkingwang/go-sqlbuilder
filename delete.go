@@ -9,13 +9,16 @@ import (
 //
 
 type DeleteBuilder struct {
-	table       string
-	forceDelete bool
+	ctx    *SQLBuilder
+	table  string
+	ensure bool // 删除全表时，需要强制设置一个标记位。
 }
 
-func Delete(table string) *DeleteBuilder {
+func newDeleteBuilder(ctx *SQLBuilder, table string) *DeleteBuilder {
 	return &DeleteBuilder{
-		table: table,
+		ctx:    ctx,
+		table:  table,
+		ensure: false,
 	}
 }
 
@@ -30,12 +33,12 @@ func (slf *DeleteBuilder) compile() *bytes.Buffer {
 	}
 	buf := new(bytes.Buffer)
 	buf.WriteString("DELETE FROM ")
-	buf.WriteString(EscapeName(slf.table))
+	buf.WriteString(slf.ctx.EscapeName(slf.table))
 	return buf
 }
 
-func (slf *DeleteBuilder) YesYesYesForceDelete() *DeleteBuilder {
-	slf.forceDelete = true
+func (slf *DeleteBuilder) YesImSureDeleteTable() *DeleteBuilder {
+	slf.ensure = true
 	return slf
 }
 
@@ -49,10 +52,10 @@ func (slf *DeleteBuilder) Compile() string {
 
 func (slf *DeleteBuilder) ToSQL() string {
 	sqlTxt := endOfSQL(slf.compile())
-	if slf.forceDelete {
+	if slf.ensure {
 		return sqlTxt
 	} else {
-		panic("Warning for FULL-DELETE, you should call 'YesYesYesForceDelete(bool)' to ensure. SQLText: " + sqlTxt)
+		panic("Warning for FULL-DELETE the table, you must call 'YesImSureDeleteTable(bool)' to ensure. SQLText: " + sqlTxt)
 	}
 }
 

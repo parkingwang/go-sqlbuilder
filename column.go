@@ -211,7 +211,7 @@ func (slf *ColumnTypeBuilder) ToSQL() string {
 }
 
 func (slf *ColumnTypeBuilder) Execute() *Executor {
-	return newExecute(slf.ToSQL(), slf.ctx.db)
+	return newExecute(slf.ToSQL(), slf.ctx.prepare)
 }
 
 //

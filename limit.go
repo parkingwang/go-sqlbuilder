@@ -48,5 +48,5 @@ func (slf *LimitBuilder) GroupBy(columns ...string) *GroupByBuilder {
 }
 
 func (slf *LimitBuilder) Execute() *Executor {
-	return newExecute(slf.ToSQL(), slf.ctx.db)
+	return newExecute(slf.ToSQL(), slf.ctx.prepare)
 }

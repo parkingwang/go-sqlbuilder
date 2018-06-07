@@ -14,19 +14,19 @@ const SQLComma = ", "
 const SQLSpace = " "
 
 type SQLContext struct {
-	db          SQLPrepare
+	prepare     SQLPrepare
 	placeHolder string
 	nameEscape  string
 	valueEscape string
 }
 
 func NewContext() *SQLContext {
-	return NewWith(nil)
+	return NewContextWith(nil)
 }
 
-func NewWith(db SQLPrepare) *SQLContext {
+func NewContextWith(prepare SQLPrepare) *SQLContext {
 	return &SQLContext{
-		db:          db,
+		prepare:     prepare,
 		placeHolder: "?",
 		nameEscape:  "`",
 		valueEscape: "'",

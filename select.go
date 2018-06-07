@@ -87,5 +87,5 @@ func (slf *SelectBuilder) ToSQL() string {
 }
 
 func (slf *SelectBuilder) Execute() *Executor {
-	return newExecute(slf.ToSQL(), slf.ctx.db)
+	return newExecute(slf.ToSQL(), slf.ctx.prepare)
 }

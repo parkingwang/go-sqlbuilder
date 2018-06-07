@@ -41,5 +41,5 @@ func (slf *GroupByBuilder) OrderBy(columns ...string) *OrderByBuilder {
 }
 
 func (slf *GroupByBuilder) Execute() *Executor {
-	return newExecute(slf.ToSQL(), slf.ctx.db)
+	return newExecute(slf.ToSQL(), slf.ctx.prepare)
 }

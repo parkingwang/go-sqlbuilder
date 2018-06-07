@@ -105,5 +105,5 @@ func (slf *InsertBuilder) ToSQL() string {
 }
 
 func (slf *InsertBuilder) Execute() *Executor {
-	return newExecute(slf.ToSQL(), slf.ctx.db)
+	return newExecute(slf.ToSQL(), slf.ctx.prepare)
 }

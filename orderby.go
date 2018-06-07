@@ -61,5 +61,5 @@ func (slf *OrderByBuilder) ToSQL() string {
 }
 
 func (slf *OrderByBuilder) Execute() *Executor {
-	return newExecute(slf.ToSQL(), slf.ctx.db)
+	return newExecute(slf.ToSQL(), slf.ctx.prepare)
 }

@@ -78,7 +78,7 @@ func (slf *UpdateBuilder) ToSQL() string {
 }
 
 func (slf *UpdateBuilder) Execute() *Executor {
-	return newExecute(slf.ToSQL(), slf.ctx.db)
+	return newExecute(slf.ToSQL(), slf.ctx.prepare)
 }
 
 func escapeWith(ctx *SQLContext, column string) string {

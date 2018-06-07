@@ -44,5 +44,5 @@ func (slf *DropIndexBuilder) ToSQL() string {
 }
 
 func (slf *DropIndexBuilder) Execute() *Executor {
-	return newExecute(slf.ToSQL(), slf.ctx.db)
+	return newExecute(slf.ToSQL(), slf.ctx.prepare)
 }
